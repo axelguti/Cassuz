@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="CassuzResultadoFinal.jnlp">
+  <information>
+    <title>CassuzResultadoFinal</title>
+    <vendor>Unknown</vendor>
+    <description>CassuzResultadoFinal</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="CassuzResultadoFinal.jar" size="1277440" download="eager" />
+    <jar href="fontawesomefx-8.9.jar" size="571068" download="eager" />
+    <jar href="jfoenix-8.0.10.jar" size="2710207" download="eager" />
+    <jar href="mssql-jdbc-9.2.1.jre8.jar" size="1327629" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="600" height="400" main-class="cassuz.examples.com.Main"  name="CassuzResultadoFinal" />
+  <update check="background"/>
+</jnlp>

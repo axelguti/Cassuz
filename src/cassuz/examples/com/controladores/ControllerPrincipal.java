@@ -2,15 +2,11 @@ package cassuz.examples.com.controladores;
 
 
 
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.awt.*;
+import java.io.*;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Iterator;
+
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -28,20 +24,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import javafx.scene.input.MouseEvent;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 import javax.swing.*;
 
-public class ControllerPrincipal implements Initializable {
+public class ControllerPrincipal extends Component implements Initializable {
+    private JFileChooser fc;
     @FXML
     private ComboBox<String> cmbCatalogos;
     @FXML
@@ -181,6 +174,8 @@ public class ControllerPrincipal implements Initializable {
     @FXML
     private ObservableList<String> listaRol;
     @FXML
+    private ObservableList<String> cmbcata;
+    @FXML
     private ObservableList<String> listaBuscarUsuario;
     @FXML
     private final DAOFactory factory = DAOFactory.getInstance();
@@ -195,8 +190,6 @@ public class ControllerPrincipal implements Initializable {
     @FXML
     private final ProductoInterface producto=factory.getProductoDAO();
 
-    private HSSFWorkbook wb;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         MostrarLista();
@@ -205,8 +198,14 @@ public class ControllerPrincipal implements Initializable {
         listaRol();
         listaBuscarUsuario();
         mostrardatosProducto();
+        listcata();
     }
-
+    private void listcata(){
+        List<Catalogo> listar=daoCatalogo.listar();
+        cmbcata=FXCollections.observableArrayList();
+        listar.forEach(a->cmbcata.addAll(a.getNombre()));
+        cmbCatalogos.setItems(cmbcata);
+    }
     private void listaRol(){
         List<Rol> listar=rol.listar();
         listaRol=FXCollections.observableArrayList();
@@ -647,11 +646,16 @@ public class ControllerPrincipal implements Initializable {
     @FXML
     private void datosProducto(MouseEvent mouseEvent) {
     }
-    public void ImportarProductos(File archivo,TableView tblPProductos) {
 
-    }
+    @FXML
+    private void importarProductos(ActionEvent actionEvent){
+        fc=new JFileChooser();
+        int seleccion=fc.showOpenDialog(this);
+        if(seleccion==JFileChooser.APPROVE_OPTION){
+            File f=fc.getSelectedFile();
+            producto.Importar(f);
 
-    public void importarProductos(ActionEvent actionEvent){
-
+        }
+        mostrardatosProducto();
     }
 }

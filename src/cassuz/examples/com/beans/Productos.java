@@ -55,4 +55,13 @@ public class Productos {
     public void setPreciopromotor(double preciopromotor) {
         this.preciopromotor = preciopromotor;
     }
+
+    public void Imprimir() {
+        System.out.println(getPagina());
+        System.out.println(getMarca());
+        System.out.println(getCodigo());
+        System.out.println(getColor());
+        System.out.println(getPreciopublico());
+        System.out.println(getPreciopromotor());
+    }
 }

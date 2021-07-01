@@ -50,15 +50,12 @@ public class PromotorDAO implements PromotorInterface {
             stn.setString(6, t.getCorreo());
             stn.setString(7,t.getRecomendado());
             stn.setString(8,t.getFechaNacimiento().toString());
-            ValidarDNI(t.getDni());
             int f=stn.executeUpdate();
             result="se afecto "+f+" filas";
             stn.close();
             cn.close();
         }catch(SQLException ex){
             result=ex.getMessage();
-        } catch (ExcepcionDNI e) {
-            JOptionPane.showMessageDialog(null,"Error. DNI ya Existente","Error",0);
         }
         return result;
     }

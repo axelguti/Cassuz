@@ -7,6 +7,4 @@ public interface EntidadInterface<T> {
     public String modificar(T t);
     public String eliminar(Object id);
     public List<T> listar();
-
-
 }

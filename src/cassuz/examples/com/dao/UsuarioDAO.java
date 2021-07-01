@@ -1,10 +1,10 @@
 package cassuz.examples.com.dao;
 
+import cassuz.examples.com.Excepciones.ExcepcionUsuario;
 import cassuz.examples.com.beans.Usuario;
 import cassuz.examples.com.conexion.Conexion;
 import cassuz.examples.com.interfaces.UsuarioInterface;
-import javafx.scene.control.ComboBox;
-
+import javax.swing.*;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -12,11 +12,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class UsuarioDAO implements UsuarioInterface {
 
     private Connection cn;
     private CallableStatement stm=null;
+
+    public void ValidarUsuario(String dni) throws ExcepcionUsuario {
+        List<Usuario> list=listar();
+        Optional<Usuario> op=list.stream().filter(a->a.getUsuarioUsuario().equals(dni)).findFirst();
+        if(op.isPresent()){
+            throw new ExcepcionUsuario("Error: Usuario ya existe");
+        }
+
+    }
 
     @Override
     public String grabar(Usuario usuario) {
@@ -24,11 +34,12 @@ public class UsuarioDAO implements UsuarioInterface {
 
         try{
             cn= Conexion.getConexion();
-            stm=cn.prepareCall("exec SP_C_USUARIO ?,?,?,?,?,?");
+            stm= Objects.requireNonNull(cn).prepareCall("exec SP_C_USUARIO ?,?,?,?,?,?");
             stm.setString(1,usuario.getNomUsuario());
             stm.setString(2,usuario.getApeUsuario());
             stm.setString(3, usuario.getTelefUsuario());
             stm.setString(4,usuario.getUsuarioUsuario());
+
             stm.setString(5,usuario.getContraUsuario());
             stm.setString(6,usuario.getRolUsuario());
             int f=stm.executeUpdate();

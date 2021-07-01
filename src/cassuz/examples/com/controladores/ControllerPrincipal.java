@@ -34,23 +34,79 @@ import javafx.scene.input.MouseEvent;
 import javax.swing.*;
 
 public class ControllerPrincipal extends Component implements Initializable {
+    @FXML
+    private TableView<Pedidos> tblDatosPedidos;
+    @FXML
+    private TableColumn<Pedidos,String> tcPedidoID;
+    @FXML
+    private TableColumn<Pedidos,String> tcPedidoDni;
+    @FXML
+    private TableColumn<Pedidos,String> tcPedidoNombres;
+    @FXML
+    private TableColumn<Pedidos,String> tcPedidosApellido;
+    @FXML
+    private TableColumn<Pedidos,String> tcPedidosCatalogo;
+    @FXML
+    private TableColumn<Pedidos,String> tcPedidosCodigo;
+    @FXML
+    private TableColumn<Pedidos,String> tcPedidosMarca;
+    @FXML
+    private TableColumn<Pedidos,String> tcPedidosColor;
+    @FXML
+    private TableColumn<Pedidos,String> tcPedidosPrecio;
+    @FXML
+    private TextField txtBPedido;
+    @FXML
+    private TextField txtPedidoNombrePromotor;
+    @FXML
+    private ComboBox cmbPedidoDniPromotor;
+    @FXML
+    private TextField txtPedidoApellidoPromotor;
+    @FXML
+    private Button btnModificarProductos;
+    @FXML
+    private TableColumn<Productos, String> tcPCatalogo;
+    @FXML
+    private TableView<Productos> tblProductos;
+    @FXML
+    private TableColumn<Productos,String> tcPDescripcion;
+    @FXML
+    private TableColumn<Productos,String>  tcPTalla;
+    @FXML
+    private TableColumn<Productos,String>  tcPPrecio;
+    @FXML
+    private TableColumn<Productos,String>  tcPCodigo;
+    @FXML
+    private TextField txtPTalla;
+    @FXML
+    private TextField txtPCodigo;
+    @FXML
+    private TextField txtPColor;
+    @FXML
+    private ComboBox<String> cmbCatalogosP;
+    @FXML
+    private TextField txtPPrecio;
+    @FXML
+    private TextField txtPDescripcion;
+    @FXML
+    private Button btnRegistrarCatalogo;
     private JFileChooser fc;
     @FXML
     private ComboBox<String> cmbCatalogos;
     @FXML
-    private TableView<Productos> tblPDatos;
+    private TableView<ListaPrecios> tblPDatos;
     @FXML
     private TextField txtPPromotor;
     @FXML
     private TextField txtBProductos;
     @FXML
-    private TableColumn<Productos,String> tcPCostoPromotor;
+    private TableColumn<ListaPrecios,String> tcPCostoPromotor;
     @FXML
-    private TableColumn<Productos,String> tcPCostoPublico;
+    private TableColumn<ListaPrecios,String> tcPCostoPublico;
     @FXML
     private TableColumn<Productos,String> tcPColor;
     @FXML
-    private TableColumn<Productos,String> tcPEstilo;
+    private TableColumn<ListaPrecios,String> tcPEstilo;
     @FXML
     private TableColumn<Productos,String> tcPMarca;
     @FXML
@@ -63,8 +119,6 @@ public class ControllerPrincipal extends Component implements Initializable {
     private TextField txtPEstilo;
     @FXML
     private TextField txtPCostoPromotor;
-    @FXML
-    private TextField txtPColor;
     @FXML
     private TextField txtPPagina;
     @FXML
@@ -170,7 +224,9 @@ public class ControllerPrincipal extends Component implements Initializable {
     @FXML
     private ObservableList<Usuario> listaUsuario;
     @FXML
-    private ObservableList<Productos> listaProduto;
+    private ObservableList<ListaPrecios> listaPrecio;
+    @FXML
+    private  ObservableList<Productos> listaProducto;
     @FXML
     private ObservableList<String> listaRol;
     @FXML
@@ -178,18 +234,17 @@ public class ControllerPrincipal extends Component implements Initializable {
     @FXML
     private ObservableList<String> listaBuscarUsuario;
     @FXML
-    private final DAOFactory factory = DAOFactory.getInstance();
+    private final CatalogoInterface daoCatalogo = DAOFactory.getCatalogoDAO();
     @FXML
-    private final CatalogoInterface daoCatalogo = factory.getCatalogoDAO();
+    private final PromotorInterface dao = DAOFactory.getPromotorDAO();
     @FXML
-    private final PromotorInterface dao = factory.getPromotorDAO();
+    private final UsuarioInterface usr= DAOFactory.getUsuarioDAO();
     @FXML
-    private final UsuarioInterface usr= factory.getUsuarioDAO();
+    private final RolInterface rol= DAOFactory.getRolDAO();
     @FXML
-    private final RolInterface rol=factory.getRolDAO();
+    private final ListaPrecioInterface listaPre= DAOFactory.getListaPrecioDAO();
     @FXML
-    private final ProductoInterface producto=factory.getProductoDAO();
-
+    private final ProductoInterface producto= DAOFactory.getProductoDAO();
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         MostrarLista();
@@ -198,27 +253,25 @@ public class ControllerPrincipal extends Component implements Initializable {
         listaRol();
         listaBuscarUsuario();
         mostrardatosProducto();
-        listcata();
+        ModificaProducto();
+
     }
-    private void listcata(){
-        List<Catalogo> listar=daoCatalogo.listar();
-        cmbcata=FXCollections.observableArrayList();
-        listar.forEach(a->cmbcata.addAll(a.getNombre()));
-        cmbCatalogos.setItems(cmbcata);
-    }
+
+    //Lista de roles
     private void listaRol(){
         List<Rol> listar=rol.listar();
         listaRol=FXCollections.observableArrayList();
-        listar.stream().forEach(a->listaRol.addAll(a.getNomrol()));
+        listar.forEach(a->listaRol.addAll(a.getNomrol()));
         cmbRol.setItems(listaRol);
     }
 
+    //Busca a los usuarios
     private void listaBuscarUsuario(){
         listaBuscarUsuario=FXCollections.observableArrayList("Nombre","Apellidos","Usuario");
         cmbBuscarUsuarios.setItems(listaBuscarUsuario);
     }
-    @FXML
-    //Ingresar datos a la tabla
+
+    //Muestra en la tabla la lista de promotor
     private void MostrarLista() {
         List<Promotor> listar = dao.listar();
         lista = FXCollections.observableArrayList();
@@ -234,6 +287,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         tblDatos.setItems(lista);
     }
 
+    //muestra en la tabla la lista de los catalogos
     private void MostrarListaCatalogo() {
         List<Catalogo> listar=daoCatalogo.listar();
         listaCatalogo = FXCollections.observableArrayList();
@@ -245,6 +299,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         tblDatosCatalogo.setItems(listaCatalogo);
     }
 
+    //Muestra en la tabla la lista de usuarios
     public void mostrarUsuario(){
         List<Usuario> listar=usr.listar();
         listaUsuario=FXCollections.observableArrayList();
@@ -263,7 +318,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         MostrarLista();
     }
 
-
+    //Registra al promotor
     @FXML
     private void Registrar(ActionEvent event) {
         Promotor p = IngresarDatos();
@@ -275,15 +330,14 @@ public class ControllerPrincipal extends Component implements Initializable {
         } else {
             if (txtDni.equals(p.getDni()))
                 dao.grabar(p);
-            else {
+            else
                 dao.grabar(p);
-
-            }
         }
         vaciarTexto();
         MostrarLista();
     }
 
+    //limpia las cajas de texto del promotor
     private void vaciarTexto() {
         txtDni.setText("");
         txtTelefono.setText("");
@@ -294,6 +348,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         txtNombres.setText("");
     }
 
+    //Ingresa datos del promotor
     private Promotor IngresarDatos() {
         Promotor p = new Promotor(txtDni.getText(),
                 txtNombres.getText(),
@@ -306,6 +361,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         return p;
     }
 
+    //Elimina datos del promotor
     @FXML
     private void Eliminar(ActionEvent event) {
         String id = txtDni.getText();
@@ -314,7 +370,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         MostrarLista();
     }
 
-    //Modificar registro
+    //Modificar datos del promotor
     @FXML
     private void Modificar(ActionEvent event) {
         Promotor p = IngresarDatos();
@@ -334,6 +390,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         MostrarLista();
     }
 
+    //Mandar datos de la tabla a las cajas de texto
     @FXML
     private void datos(MouseEvent mouseEvent) {
         Promotor promotor = tblDatos.getSelectionModel().getSelectedItem();
@@ -351,8 +408,9 @@ public class ControllerPrincipal extends Component implements Initializable {
 
     }
 
-    private void Buscar(){
-      mostrarUsuario();
+    //Busca al promotor
+    @FXML
+    void buscar(MouseEvent mouseEvent) {
         FilteredList<Promotor> filtrar = new FilteredList<>(lista, b -> true);
         txtBuscar.textProperty().addListener((ObservableList, oldValue, newValue) -> {
             filtrar.setPredicate(promotor -> {
@@ -368,16 +426,13 @@ public class ControllerPrincipal extends Component implements Initializable {
         sorted.comparatorProperty().bind(tblDatos.comparatorProperty());
         tblDatos.setItems(sorted);
     }
-    @FXML
-    void buscar(MouseEvent mouseEvent) {
-        Buscar();
-    }
 
     @FXML
     private void Limpiar(ActionEvent actionEvent) {
         vaciarTexto();
     }
 
+    //Registra al usuario
     @FXML
     private void RegistrarUsuario(ActionEvent actionEvent) {
         Usuario u=DatosUsuario();
@@ -388,13 +443,19 @@ public class ControllerPrincipal extends Component implements Initializable {
             Error();
 
         }else{
-            usr.grabar(u);
-            JOptionPane.showMessageDialog(null,"Registro Guardado...","guardado",1);
+
+            if(txtUUsuario.equals(u.getUsuarioUsuario())){
+                usr.grabar(u);
+            }else{
+                usr.grabar(u);
+                JOptionPane.showMessageDialog(null,"Registro guardado","Registro",1);
+            }
         }
         limpiarUsuario();
         mostrarUsuario();
     }
 
+    //Ingresa datos de usuario
     private Usuario DatosUsuario(){
         Usuario u=new Usuario(txtUUsuario.getText(),txtUContraseña.getText());
         u.setNomUsuario(txtUNombre.getText());
@@ -404,6 +465,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         return u;
     }
 
+    //Modifica datos al usuario
     @FXML
     private void ModificarUsuario(ActionEvent actionEvent) {
         Usuario u=DatosUsuario();
@@ -421,6 +483,8 @@ public class ControllerPrincipal extends Component implements Initializable {
         limpiarUsuario();
         mostrarUsuario();
     }
+
+    //limpia las cajas de texto del usuario
     private void limpiarUsuario() {
         txtUNombre.setText("");
         txtUApellido.setText("");
@@ -429,6 +493,8 @@ public class ControllerPrincipal extends Component implements Initializable {
         txtUContraseña.setText("");
         txtURepiteContraseña.setText("");
     }
+
+    //Elimina al usuario
     @FXML
     private void EliminarUsuario(ActionEvent actionEvent) {
         String id=txtUUsuario.getText();
@@ -437,6 +503,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         limpiarUsuario();
     }
 
+    //manda los datos de la tabla a la caja de texto del usuario
     @FXML
     private void datosUsuario(MouseEvent mouseEvent) {
         Usuario usuario = tblUDatos.getSelectionModel().getSelectedItem();
@@ -453,11 +520,13 @@ public class ControllerPrincipal extends Component implements Initializable {
         }
     }
 
+    //Limpia el catalogo
     @FXML
     private void LimpiarCatalogo(ActionEvent actionEvent) {
         limpiarCatalogo();
     }
 
+    //codigo para Limpiar el catalogo
     private void limpiarCatalogo(){
         txtIdCatalogo.setText("");
         txtCatalogo.setText("");
@@ -465,6 +534,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         txtCTelefono.setText("");
     }
 
+    //Ingresa datos del catalogo
     private Catalogo DatosCatalogo() {
         Catalogo c = new Catalogo();
         c.setNombre(txtCatalogo.getText());
@@ -473,10 +543,12 @@ public class ControllerPrincipal extends Component implements Initializable {
         return c;
     }
 
+    //Codigo para mandar error
     private void Error(){
         JOptionPane.showMessageDialog(null, "Error. Datos Vacios", "Error", 1);
     }
 
+    //Registra el catalogo
     @FXML
     private void RegistrarCatalogo(ActionEvent actionEvent) {
         Catalogo c=DatosCatalogo();
@@ -493,14 +565,17 @@ public class ControllerPrincipal extends Component implements Initializable {
         MostrarListaCatalogo();
     }
 
+    //Elimina el catalogo
     @FXML
     private void EliminarCatalogo(ActionEvent actionEvent) {
-        String id=txtCatalogo.getText();
+        int id= Integer.parseInt(txtIdCatalogo.getText());
         daoCatalogo.eliminar(id);
         MostrarListaCatalogo();
         limpiarCatalogo();
+
     }
 
+    //Modifica el catalogo
     @FXML
     private void ModificarCatalogo(ActionEvent actionEvent) {
         Catalogo c=DatosCatalogo();
@@ -519,6 +594,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         MostrarListaCatalogo();
     }
 
+    //Busca catalogo
     @FXML
     private void BuscarCatalogo(MouseEvent mouseEvent) {
         MostrarListaCatalogo();
@@ -538,11 +614,13 @@ public class ControllerPrincipal extends Component implements Initializable {
         tblDatosCatalogo.setItems(sorted);
     }
 
+    //Muestra el catalogo
     @FXML
     private void MostrarCatalogo(ActionEvent actionEvent) {
         MostrarListaCatalogo();
     }
 
+    //Manda los datos de la tabla a la caja de texto del catalogo
     @FXML
     private void datosCatalogo(MouseEvent mouseEvent) {
         Catalogo catalogo = tblDatosCatalogo.getSelectionModel().getSelectedItem();
@@ -557,11 +635,13 @@ public class ControllerPrincipal extends Component implements Initializable {
         }
     }
 
+    //Muestra los datos en la tabla del usuario
     @FXML
     private void MostrarUsuario(ActionEvent actionEvent) {
         mostrarUsuario();
     }
 
+    //Busca al usuario
     @FXML
     private void BuscarUsuario(MouseEvent mouseEvent) {
         mostrarUsuario();
@@ -600,62 +680,207 @@ public class ControllerPrincipal extends Component implements Initializable {
         tblUDatos.setItems(sorted);
     }
 
+    //Limpia las cajas de texto
     @FXML
     private void LimpiarUsuario(ActionEvent actionEvent) {
         limpiarUsuario();
     }
 
     @FXML
-    private void LimpiarProductos(ActionEvent actionEvent) {
+    private void LimpiarListaPrecios(ActionEvent actionEvent) {
     }
 
+    //Codigo para mostrar datos del producto
     private void mostrardatosProducto(){
         List<Productos> listar=producto.listar();
-        listaProduto=FXCollections.observableArrayList();
+        listaProducto=FXCollections.observableArrayList();
+        tcPCatalogo.setCellValueFactory(new PropertyValueFactory<>("catalogo"));
         tcPPagina.setCellValueFactory(new PropertyValueFactory<>("pagina"));
+        tcPCodigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         tcPMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
-        tcPEstilo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
         tcPColor.setCellValueFactory(new PropertyValueFactory<>("color"));
-        tcPCostoPublico.setCellValueFactory(new PropertyValueFactory<>("preciopublico"));
-        tcPCostoPromotor.setCellValueFactory(new PropertyValueFactory<>("preciopromotor"));
-        listar.forEach(a->listaProduto.addAll(a));
-        tblPDatos.setItems(listaProduto);
+        tcPDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+        tcPTalla.setCellValueFactory(new PropertyValueFactory<>("talla"));
+        tcPPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
+        listar.forEach(a->listaProducto.addAll(a));
+        tblProductos.setItems(listaProducto);
+    }
+    //Muestra los precios
+    @FXML
+    private void MostrarPrecios(ActionEvent actionEvent) {
+        mostrardatosProducto();
     }
 
+    //Elimina precios
+    @FXML
+    private void EliminarPrecios(ActionEvent actionEvent) {
+    }
+
+    //Modifica Precios
+    @FXML
+    private void ModificarPrecios(ActionEvent actionEvent) {
+    }
+
+    //Registra Precios
+    @FXML
+    private void RegistrarPrecios(ActionEvent actionEvent) {
+    }
+
+    //busca productos
+    @FXML
+    private void buscarProductos(MouseEvent mouseEvent) {
+    }
+
+    //Manda los datos de la tabla a las cajas de texto
+    @FXML
+    private void datosProducto(MouseEvent mouseEvent) {
+        Productos productos = tblProductos.getSelectionModel().getSelectedItem();
+        if(productos==null){
+            MostrarLista();
+        }else{
+            cmbCatalogosP.getSelectionModel().select(productos.getCatalogo());
+            txtPPagina.setText(String.valueOf(productos.getPagina()));
+            txtPCodigo.setText(productos.getCodigo());
+            txtPMarca.setText(productos.getMarca());
+            txtPColor.setText(productos.getColor());
+            txtPDescripcion.setText(productos.getDescripcion());
+            txtPTalla.setText(productos.getTalla());
+            txtPPrecio.setText(String.valueOf(productos.getPrecio()));
+        }
+    }
+    //Importar Precios de los catalogos
+    @FXML
+    private void importarPrecios(ActionEvent actionEvent){
+        fc=new JFileChooser();
+        String r="";
+        int seleccion=fc.showOpenDialog(this);
+        if(seleccion==JFileChooser.APPROVE_OPTION){
+            File f=fc.getSelectedFile();
+            r= listaPre.Importar(f);
+            JOptionPane.showMessageDialog(null,r);
+        }
+        mostrardatosProducto();
+    }
+    //Muestra los catalogos en el combobox
+    @FXML
+    private void cmbmuestracata(MouseEvent mouseEvent) {
+        List<Catalogo> listar=daoCatalogo.listar();
+        cmbcata=FXCollections.observableArrayList();
+        listar.forEach(a->cmbcata.add(a.getNombre()));
+        cmbCatalogos.setItems(cmbcata);
+        cmbCatalogosP.setItems(cmbcata);
+    }
+
+    //Registra al Producto
+    @FXML
+    private void RegistrarProductos(ActionEvent actionEvent) {
+        Productos p=IngresarProductos();
+        if(txtPPagina.getText().isEmpty() || txtPCodigo.getText().isEmpty() ||
+            txtPMarca.getText().isEmpty() || txtPColor.getText().isEmpty() ||
+            txtPPrecio.getText().isEmpty() || txtPDescripcion.getText().isEmpty() ||
+            txtPTalla.getText().isEmpty()){
+        }else{
+            producto.grabar(p);
+            JOptionPane.showMessageDialog(null,"Producto Registrado","Registro",1);
+        }
+        limpiarProductos();
+        mostrardatosProducto();
+    }
+
+    //Ingresa datos del producto
+    private Productos IngresarProductos(){
+        Productos p=new Productos();
+
+        p.setCatalogo(String.valueOf(cmbCatalogosP.getValue()));
+        p.setPagina(Integer.parseInt(txtPPagina.getText()));
+        p.setCodigo(txtPCodigo.getText());
+        p.setMarca(txtPMarca.getText());
+        p.setColor(txtPColor.getText());
+        p.setDescripcion(txtPDescripcion.getText());
+        p.setTalla(txtPTalla.getText());
+        p.setPrecio(Double.parseDouble(txtPPrecio.getText()));
+
+        return p;
+    }
+
+    //Codigo de limpiar Productos
+    private void limpiarProductos() {
+        txtPPagina.setText("");
+        txtPCodigo.setText("");
+        txtPMarca.setText("");
+        txtPColor.setText("");
+        txtPDescripcion.setText("");
+        txtPTalla.setText("");
+        txtPPrecio.setText("");
+    }
+
+    //Codigo de modificar producto con expresiones lambda
+    private void ModificaProducto(){
+
+        btnModificarProductos.setOnAction(a->{
+            Productos p=IngresarProductos();
+            if(txtPPagina.getText().isEmpty() || txtPCodigo.getText().isEmpty() ||
+                    txtPMarca.getText().isEmpty() || txtPColor.getText().isEmpty() ||
+                    txtPPrecio.getText().isEmpty() || txtPDescripcion.getText().isEmpty() ||
+                    txtPTalla.getText().isEmpty()){
+            }else{
+                producto.modificar(p);
+                JOptionPane.showMessageDialog(null,"Producto Modificado","Registro",1);
+            }
+            limpiarProductos();
+            mostrardatosProducto();
+        });
+
+    }
+
+    //Modifica Producto
+    @FXML
+    private void ModificarProductos(ActionEvent actionEvent) {
+    }
+
+    //
+    @FXML
+    private void importarProductos(ActionEvent actionEvent) {
+    }
+
+    //Elimina al Producto
+    @FXML
+    private void EliminarProductos(ActionEvent actionEvent) {
+        String codigo=txtPCodigo.getText();
+        String eliminar=producto.eliminar(codigo);
+        JOptionPane.showMessageDialog(null,eliminar,"Eliminar",1);
+        limpiarProductos();
+        mostrardatosProducto();
+    }
+
+    //Muestra en la tabla los datos de los productos
     @FXML
     private void MostrarProductos(ActionEvent actionEvent) {
         mostrardatosProducto();
     }
 
+    //Limpia las cajas de texto del producto
     @FXML
-    private void EliminarProductos(ActionEvent actionEvent) {
+    private void LimpiarProductos(ActionEvent actionEvent) {
+        limpiarProductos();
     }
 
     @FXML
-    private void ModificarProductos(ActionEvent actionEvent) {
+    private void ListaPrecios(MouseEvent mouseEvent) {
     }
 
-    @FXML
-    private void RegistrarProductos(ActionEvent actionEvent) {
+    public void LimpiarPedidosProductos(ActionEvent actionEvent) {
     }
 
-    @FXML
-    private void buscarProductos(MouseEvent mouseEvent) {
+    public void RegistrarPedidos(ActionEvent actionEvent) {
     }
 
-    @FXML
-    private void datosProducto(MouseEvent mouseEvent) {
+    public void ModificarPedidos(ActionEvent actionEvent) {
     }
 
-    @FXML
-    private void importarProductos(ActionEvent actionEvent){
-        fc=new JFileChooser();
-        int seleccion=fc.showOpenDialog(this);
-        if(seleccion==JFileChooser.APPROVE_OPTION){
-            File f=fc.getSelectedFile();
-            producto.Importar(f);
+    public void EliminarPedidos(ActionEvent actionEvent) {
+    }
 
-        }
-        mostrardatosProducto();
+    public void MostrarPedidos(ActionEvent actionEvent) {
     }
 }

@@ -1,14 +1,9 @@
 package cassuz.examples.com.dao;
 
-import cassuz.examples.com.beans.Productos;
+import cassuz.examples.com.beans.ListaPrecios;
 import cassuz.examples.com.conexion.Conexion;
-import cassuz.examples.com.interfaces.ProductoInterface;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DataFormatter;
+import cassuz.examples.com.interfaces.ListaPrecioInterface;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -19,15 +14,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
-public class ProductoDAO implements ProductoInterface {
+public class ListaPreciosDAO implements ListaPrecioInterface {
     private Connection cn;
     private CallableStatement stm=null;
     @Override
-    public String grabar(Productos productos) {
+    public String grabar(ListaPrecios productos) {
         String result="";
             try {
                 cn=Conexion.getConexion();
@@ -49,7 +42,7 @@ public class ProductoDAO implements ProductoInterface {
     }
 
     @Override
-    public String modificar(Productos productos) {
+    public String modificar(ListaPrecios productos) {
         return null;
     }
 
@@ -59,15 +52,15 @@ public class ProductoDAO implements ProductoInterface {
     }
 
     @Override
-    public List<Productos> listar() {
-        List<Productos> listar = new ArrayList<>();
+    public List<ListaPrecios> listar() {
+        List<ListaPrecios> listar = new ArrayList<>();
         try{
             cn=Conexion.getConexion();
             stm=cn.prepareCall("SP_R_PRODUCTO");
             ResultSet rs=stm.executeQuery();
-            Productos obj;
+            ListaPrecios obj;
             while(rs.next()){
-                obj=new Productos();
+                obj=new ListaPrecios();
                 obj.setPagina(rs.getInt("pagproducto"));
                 obj.setMarca(rs.getString("marcaproducto"));
                 obj.setCodigo(rs.getString("codproducto"));
@@ -91,7 +84,7 @@ public class ProductoDAO implements ProductoInterface {
             FileInputStream fi=new FileInputStream(file);
             XSSFWorkbook archivoExcel = new XSSFWorkbook(fi);
             XSSFSheet hoja = archivoExcel.getSheetAt(0);
-            Productos p = new Productos();
+            ListaPrecios p = new ListaPrecios();
             int last=hoja.getLastRowNum();
             for (int i=2;i<=last;i++){
                 Row fila=hoja.getRow(i);

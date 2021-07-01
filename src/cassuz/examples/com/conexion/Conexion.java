@@ -9,8 +9,6 @@ public class Conexion {
     public static Connection getConexion(){
         String url="jdbc:sqlserver://AXEL\\MSSQLSERVER01:1433;" +
                 "database=BDCASSUZ;user=Axl;password=1234;";
-
-
         try{
             Connection con=DriverManager.getConnection(url);
             return con;

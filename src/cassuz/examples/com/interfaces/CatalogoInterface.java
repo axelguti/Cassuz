@@ -1,6 +1,6 @@
 package cassuz.examples.com.interfaces;
 
-import cassuz.examples.com.beans.Catalogo;
+import cassuz.examples.com.DTO.CatalogoDTO;
 
-public interface CatalogoInterface extends EntidadInterface<Catalogo>{
+public interface CatalogoInterface extends EntidadInterface<CatalogoDTO> {
 }

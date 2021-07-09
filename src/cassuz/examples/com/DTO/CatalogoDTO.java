@@ -1,10 +1,21 @@
-package cassuz.examples.com.beans;
+package cassuz.examples.com.DTO;
 
-public class Catalogo {
+import java.time.LocalDate;
+
+public class CatalogoDTO {
     private int id;
     private String nombre;
     private String representante;
     private String telefono;
+    private LocalDate fecha;
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
 
     public int getId() {
         return id;

@@ -1,6 +1,6 @@
 package cassuz.examples.com.dao;
 
-import cassuz.examples.com.beans.ListaPrecios;
+import cassuz.examples.com.DTO.ListaPreciosDTO;
 import cassuz.examples.com.conexion.Conexion;
 import cassuz.examples.com.interfaces.ListaPrecioInterface;
 import org.apache.poi.ss.usermodel.Row;
@@ -20,7 +20,7 @@ public class ListaPreciosDAO implements ListaPrecioInterface {
     private Connection cn;
     private CallableStatement stm=null;
     @Override
-    public String grabar(ListaPrecios productos) {
+    public String grabar(ListaPreciosDTO productos) {
         String result="";
             try {
                 cn=Conexion.getConexion();
@@ -42,7 +42,7 @@ public class ListaPreciosDAO implements ListaPrecioInterface {
     }
 
     @Override
-    public String modificar(ListaPrecios productos) {
+    public String modificar(ListaPreciosDTO productos) {
         return null;
     }
 
@@ -52,15 +52,15 @@ public class ListaPreciosDAO implements ListaPrecioInterface {
     }
 
     @Override
-    public List<ListaPrecios> listar() {
-        List<ListaPrecios> listar = new ArrayList<>();
+    public List<ListaPreciosDTO> listar() {
+        List<ListaPreciosDTO> listar = new ArrayList<>();
         try{
             cn=Conexion.getConexion();
             stm=cn.prepareCall("SP_R_PRODUCTO");
             ResultSet rs=stm.executeQuery();
-            ListaPrecios obj;
+            ListaPreciosDTO obj;
             while(rs.next()){
-                obj=new ListaPrecios();
+                obj=new ListaPreciosDTO();
                 obj.setPagina(rs.getInt("pagproducto"));
                 obj.setMarca(rs.getString("marcaproducto"));
                 obj.setCodigo(rs.getString("codproducto"));
@@ -84,7 +84,7 @@ public class ListaPreciosDAO implements ListaPrecioInterface {
             FileInputStream fi=new FileInputStream(file);
             XSSFWorkbook archivoExcel = new XSSFWorkbook(fi);
             XSSFSheet hoja = archivoExcel.getSheetAt(0);
-            ListaPrecios p = new ListaPrecios();
+            ListaPreciosDTO p = new ListaPreciosDTO();
             int last=hoja.getLastRowNum();
             for (int i=2;i<=last;i++){
                 Row fila=hoja.getRow(i);

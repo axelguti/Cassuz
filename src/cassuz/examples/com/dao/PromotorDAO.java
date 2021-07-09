@@ -3,12 +3,11 @@ package cassuz.examples.com.dao;
 
 
 
-import cassuz.examples.com.beans.Promotor;
+import cassuz.examples.com.DTO.PromotorDTO;
 import cassuz.examples.com.conexion.Conexion;
 import cassuz.examples.com.interfaces.PromotorInterface;
 import cassuz.examples.com.Excepciones.ExcepcionDNI;
 
-import javax.swing.*;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -28,8 +27,8 @@ public class PromotorDAO implements PromotorInterface {
     private CallableStatement stn=null;
 
     public void ValidarDNI(String dni) throws ExcepcionDNI {
-        List<Promotor> list=listar();
-        Optional<Promotor> op=list.stream().filter(a->a.getDni().equals(dni)).findFirst();
+        List<PromotorDTO> list=listar();
+        Optional<PromotorDTO> op=list.stream().filter(a->a.getDni().equals(dni)).findFirst();
         if(op.isPresent()){
             throw new ExcepcionDNI("Error: DNI ya existe");
         }
@@ -37,7 +36,7 @@ public class PromotorDAO implements PromotorInterface {
     }
 
     @Override
-    public String grabar(Promotor t) {
+    public String grabar(PromotorDTO t) {
         String result="";
         try{
             cn=Conexion.getConexion();
@@ -47,9 +46,9 @@ public class PromotorDAO implements PromotorInterface {
             stn.setString(3, t.getApellido());
             stn.setString(4,t.getDireccion());
             stn.setString(5,t.getTelefono());
-            stn.setString(6, t.getCorreo());
+            stn.setString(6, t.getFechaNacimiento().toString());
             stn.setString(7,t.getRecomendado());
-            stn.setString(8,t.getFechaNacimiento().toString());
+            stn.setString(8,t.getFechaInscripcion().toString());
             int f=stn.executeUpdate();
             result="se afecto "+f+" filas";
             stn.close();
@@ -61,7 +60,7 @@ public class PromotorDAO implements PromotorInterface {
     }
 
     @Override
-    public String modificar(Promotor t) {
+    public String modificar(PromotorDTO t) {
         String result="";
         try {
             cn =Conexion.getConexion();
@@ -71,8 +70,9 @@ public class PromotorDAO implements PromotorInterface {
             stn.setString(3, t.getApellido());
             stn.setString(4,t.getDireccion());
             stn.setString(5,t.getTelefono());
-            stn.setString(6, t.getCorreo());
+            stn.setString(6, t.getFechaNacimiento().toString());
             stn.setString(7,t.getRecomendado());
+            stn.setString(8,t.getFechaInscripcion().toString());
             int f=stn.executeUpdate();
             result="Se afecto "+f+" filas";
             stn.close();
@@ -101,20 +101,20 @@ public class PromotorDAO implements PromotorInterface {
     }
 
     @Override
-    public List<Promotor> listar() {
-        List<Promotor> lista= new ArrayList<>();
+    public List<PromotorDTO> listar() {
+        List<PromotorDTO> lista= new ArrayList<>();
         try{
             cn=Conexion.getConexion();
             stn= Objects.requireNonNull(cn).prepareCall("exec SP_R_PROMOTOR");
             ResultSet rs=stn.executeQuery();
-            Promotor obj;
+            PromotorDTO obj;
             while(rs.next()){
-                obj=new Promotor(rs.getString("dnipromotor"),
+                obj=new PromotorDTO(rs.getString("dnipromotor"),
                         rs.getString("nompromotor"),
                         rs.getString("apepromotor"),
                         rs.getString("direccpromotor"),
                         rs.getString("telefpromotor"),
-                        rs.getString("correopromotor"),
+                        LocalDate.parse(rs.getString("fechanacimiento")),
                         rs.getString("recomepromotor"),
                         LocalDate.parse(rs.getString("fechainscpromotor")));
                 lista.add(obj);

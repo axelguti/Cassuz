@@ -1,6 +1,6 @@
 package cassuz.examples.com.interfaces;
 
-import cassuz.examples.com.beans.Usuario;
+import cassuz.examples.com.DTO.UsuarioDTO;
 
-public interface UsuarioInterface extends EntidadInterface<Usuario>{
+public interface UsuarioInterface extends EntidadInterface<UsuarioDTO>{
 }

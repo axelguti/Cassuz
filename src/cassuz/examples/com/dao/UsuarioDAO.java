@@ -1,10 +1,10 @@
 package cassuz.examples.com.dao;
 
 import cassuz.examples.com.Excepciones.ExcepcionUsuario;
-import cassuz.examples.com.beans.Usuario;
+import cassuz.examples.com.DTO.UsuarioDTO;
 import cassuz.examples.com.conexion.Conexion;
 import cassuz.examples.com.interfaces.UsuarioInterface;
-import javax.swing.*;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -20,8 +20,8 @@ public class UsuarioDAO implements UsuarioInterface {
     private CallableStatement stm=null;
 
     public void ValidarUsuario(String dni) throws ExcepcionUsuario {
-        List<Usuario> list=listar();
-        Optional<Usuario> op=list.stream().filter(a->a.getUsuarioUsuario().equals(dni)).findFirst();
+        List<UsuarioDTO> list=listar();
+        Optional<UsuarioDTO> op=list.stream().filter(a->a.getUsuarioUsuario().equals(dni)).findFirst();
         if(op.isPresent()){
             throw new ExcepcionUsuario("Error: Usuario ya existe");
         }
@@ -29,19 +29,19 @@ public class UsuarioDAO implements UsuarioInterface {
     }
 
     @Override
-    public String grabar(Usuario usuario) {
+    public String grabar(UsuarioDTO usuarioDTO) {
         String result = "";
 
         try{
             cn= Conexion.getConexion();
             stm= Objects.requireNonNull(cn).prepareCall("exec SP_C_USUARIO ?,?,?,?,?,?");
-            stm.setString(1,usuario.getNomUsuario());
-            stm.setString(2,usuario.getApeUsuario());
-            stm.setString(3, usuario.getTelefUsuario());
-            stm.setString(4,usuario.getUsuarioUsuario());
+            stm.setString(1, usuarioDTO.getNomUsuario());
+            stm.setString(2, usuarioDTO.getApeUsuario());
+            stm.setString(3, usuarioDTO.getTelefUsuario());
+            stm.setString(4, usuarioDTO.getUsuarioUsuario());
 
-            stm.setString(5,usuario.getContraUsuario());
-            stm.setString(6,usuario.getRolUsuario());
+            stm.setString(5, usuarioDTO.getContraUsuario());
+            stm.setString(6, usuarioDTO.getRolUsuario());
             int f=stm.executeUpdate();
             result="se afecto "+ f + " filas";
             stm.close();
@@ -53,18 +53,18 @@ public class UsuarioDAO implements UsuarioInterface {
     }
 
     @Override
-    public String modificar(Usuario usuario) {
+    public String modificar(UsuarioDTO usuarioDTO) {
         String result = "";
 
         try{
             cn=Conexion.getConexion();
             stm= cn.prepareCall("exec SP_U_USUARIO ?,?,?,?,?,?");
-            stm.setString(1,usuario.getNomUsuario());
-            stm.setString(2, usuario.getApeUsuario());
-            stm.setString(3,usuario.getTelefUsuario());
-            stm.setString(4,usuario.getUsuarioUsuario());
-            stm.setString(5,usuario.getContraUsuario());
-            stm.setString(6,usuario.getRolUsuario());
+            stm.setString(1, usuarioDTO.getNomUsuario());
+            stm.setString(2, usuarioDTO.getApeUsuario());
+            stm.setString(3, usuarioDTO.getTelefUsuario());
+            stm.setString(4, usuarioDTO.getUsuarioUsuario());
+            stm.setString(5, usuarioDTO.getContraUsuario());
+            stm.setString(6, usuarioDTO.getRolUsuario());
             int f=stm.executeUpdate();
             result="se afecto "+ f + " filas";
             stm.close();
@@ -96,15 +96,15 @@ public class UsuarioDAO implements UsuarioInterface {
     }
 
     @Override
-    public List<Usuario> listar() {
-        List<Usuario> lista= new ArrayList<>();
+    public List<UsuarioDTO> listar() {
+        List<UsuarioDTO> lista= new ArrayList<>();
         try {
             cn=Conexion.getConexion();
             stm= Objects.requireNonNull(cn).prepareCall("exec SP_R_USUARIO");
             ResultSet rs=stm.executeQuery();
-            Usuario user;
+            UsuarioDTO user;
             while(rs.next()){
-                user=new Usuario(rs.getString("usuariosusuario"),
+                user=new UsuarioDTO(rs.getString("usuariosusuario"),
                         rs.getString("contrausaurio"));
                 user.setNomUsuario(rs.getString("nomusuario"));
                 user.setApeUsuario(rs.getString("apeusuario"));

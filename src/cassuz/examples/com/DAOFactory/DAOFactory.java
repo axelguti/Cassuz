@@ -19,5 +19,5 @@ public class DAOFactory {
     public static UsuarioInterface getUsuarioDAO(){return new UsuarioDAO();}
     public static RolInterface getRolDAO(){return new RolDAO();}
     public static ListaPrecioInterface getListaPrecioDAO(){return new ListaPreciosDAO();}
-    public static ProductoInterface getProductoDAO(){return new ProductosDAO();}
+    public static PedidoInterface getPedidoDAO(){return new PedidoDAO();}
 }

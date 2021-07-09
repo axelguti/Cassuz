@@ -1,6 +1,6 @@
-package cassuz.examples.com.beans;
+package cassuz.examples.com.DTO;
 
-public class Usuario {
+public class UsuarioDTO {
     private String nomUsuario;
     private String apeUsuario;
     private String telefUsuario;
@@ -8,7 +8,7 @@ public class Usuario {
     private String contraUsuario;
     private String rolUsuario;
 
-    public Usuario(String usuarioUsuario, String contraUsuario) {
+    public UsuarioDTO(String usuarioUsuario, String contraUsuario) {
         this.usuarioUsuario = usuarioUsuario;
         this.contraUsuario = contraUsuario;
     }

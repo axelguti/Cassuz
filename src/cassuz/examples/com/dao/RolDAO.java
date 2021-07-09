@@ -1,6 +1,6 @@
 package cassuz.examples.com.dao;
 
-import cassuz.examples.com.beans.Rol;
+import cassuz.examples.com.DTO.RolDTO;
 import cassuz.examples.com.conexion.Conexion;
 import cassuz.examples.com.interfaces.RolInterface;
 
@@ -15,12 +15,12 @@ public class RolDAO implements RolInterface {
     private Connection cn;
     private CallableStatement stm=null;
     @Override
-    public String grabar(Rol rol) {
+    public String grabar(RolDTO rolDTO) {
         return null;
     }
 
     @Override
-    public String modificar(Rol rol) {
+    public String modificar(RolDTO rolDTO) {
         return null;
     }
 
@@ -30,15 +30,15 @@ public class RolDAO implements RolInterface {
     }
 
     @Override
-    public List<Rol> listar() {
-        List<Rol> listar=new ArrayList<>();
+    public List<RolDTO> listar() {
+        List<RolDTO> listar=new ArrayList<>();
         try{
             cn= Conexion.getConexion();
             stm=cn.prepareCall("exec SP_R_ROLUSUARIO");
             ResultSet rs=stm.executeQuery();
-            Rol r;
+            RolDTO r;
             while(rs.next()){
-                r=new Rol();
+                r=new RolDTO();
                 r.setIdrol(rs.getInt("idrol"));
                 r.setNomrol(rs.getString("nomrol"));
                 listar.add(r);

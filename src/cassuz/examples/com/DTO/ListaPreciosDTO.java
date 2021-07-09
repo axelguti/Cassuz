@@ -1,15 +1,13 @@
-package cassuz.examples.com.beans;
+package cassuz.examples.com.DTO;
 
-public class Productos {
+public class ListaPreciosDTO {
     private String catalogo;
     private int pagina;
     private String marca;
     private String codigo;
     private String color;
-    private String descripcion;
-    private String talla;
-    private double precio;
-
+    private double preciopublico;
+    private double preciopromotor;
 
     public String getCatalogo() {
         return catalogo;
@@ -51,27 +49,28 @@ public class Productos {
         this.color = color;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public double getPreciopublico() {
+        return preciopublico;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setPreciopublico(double preciopublico) {
+        this.preciopublico = preciopublico;
     }
 
-    public String getTalla() {
-        return talla;
+    public double getPreciopromotor() {
+        return preciopromotor;
     }
 
-    public void setTalla(String talla) {
-        this.talla = talla;
+    public void setPreciopromotor(double preciopromotor) {
+        this.preciopromotor = preciopromotor;
     }
 
-    public double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(double precio) {
-        this.precio = precio;
+    public void Imprimir() {
+        System.out.println(getPagina());
+        System.out.println(getMarca());
+        System.out.println(getCodigo());
+        System.out.println(getColor());
+        System.out.println(getPreciopublico());
+        System.out.println(getPreciopromotor());
     }
 }

@@ -1,28 +1,34 @@
-package cassuz.examples.com.beans;
+package cassuz.examples.com.DTO;
 
 import java.time.LocalDate;
 
 
-public class Promotor {
-    private final String dni;
-    private final String nombre;
-    private final String apellido;
-    private final String direccion;
-    private final String telefono;
-    private final String correo;
-    private final String recomendado;
-    private final LocalDate fechaNacimiento;
+public class PromotorDTO {
+    private  String dni;
+    private  String nombre;
+    private  String apellido;
+    private  String direccion;
+    private  String telefono;
+    private  LocalDate fechaNacimiento;
+    private  String recomendado;
+    private LocalDate fechaInscripcion;
 
-    public Promotor(String dni,String nombre, String apellido,String direccion,String telefono,String correo
-            ,String recomendado,LocalDate fechaNacimiento) {
+
+
+    public PromotorDTO(String dni, String nombre, String apellido, String direccion, String telefono, LocalDate fechaInscripcion
+            , String recomendado, LocalDate fechaNacimiento) {
         this.dni=dni;
         this.nombre = nombre;
         this.apellido = apellido;
         this.direccion=direccion;
         this.telefono = telefono;
-        this.correo = correo;
+        this.fechaInscripcion = fechaInscripcion;
         this.recomendado = recomendado;
         this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public LocalDate getFechaInscripcion() {
+        return fechaInscripcion;
     }
 
     public String getDireccion() {
@@ -31,10 +37,6 @@ public class Promotor {
 
     public String getTelefono() {
         return telefono;
-    }
-
-    public String getCorreo() {
-        return correo;
     }
 
     public String getRecomendado() {
@@ -66,7 +68,7 @@ public class Promotor {
         System.out.println("Apellidos: "+getApellido());
         System.out.println("Direccion: "+getDireccion());
         System.out.println("Telefono: "+getTelefono());
-        System.out.println("correo: "+getCorreo());
+        System.out.println("fecha nacimiento: "+getFechaNacimiento());
         System.out.println("recomendado: "+getRecomendado());
         System.out.println("Fecha: "+getFechaNacimiento());
     }

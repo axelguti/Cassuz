@@ -1,6 +1,6 @@
-package cassuz.examples.com.beans;
+package cassuz.examples.com.DTO;
 
-public class Rol {
+public class RolDTO {
     private int idrol;
     private String nomrol;
 

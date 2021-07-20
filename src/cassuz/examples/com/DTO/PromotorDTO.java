@@ -14,6 +14,9 @@ public class PromotorDTO {
     private LocalDate fechaInscripcion;
 
 
+    public PromotorDTO() {
+
+    }
 
     public PromotorDTO(String dni, String nombre, String apellido, String direccion, String telefono, LocalDate fechaInscripcion
             , String recomendado, LocalDate fechaNacimiento) {
@@ -25,6 +28,18 @@ public class PromotorDTO {
         this.fechaInscripcion = fechaInscripcion;
         this.recomendado = recomendado;
         this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
     public LocalDate getFechaInscripcion() {

@@ -1,6 +1,7 @@
 package cassuz.examples.com.controladores;
 
-
+import cassuz.examples.com.beans.IconTest;
+import javafx.animation.Interpolator;
 import cassuz.examples.com.DAOFactory.DAOFactory;
 import cassuz.examples.com.DTO.*;
 import cassuz.examples.com.interfaces.*;
@@ -12,23 +13,36 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Formatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class ControllerPrincipal extends Component implements Initializable {
     @FXML
-    private Button btnImportarProducto;
+    private ComboBox<String> cmbBuscarPedido;
+    @FXML
+    private Label lblIdpedido;
+    @FXML
+    private Button btnImportar;
     @FXML
     private TextField txtBProductos;
     @FXML
@@ -87,7 +101,7 @@ public class ControllerPrincipal extends Component implements Initializable {
     private ComboBox<String> cmbCatalogosP;
     @FXML
     private TextField txtPPrecio;
-    private JFileChooser fc;
+    private FileChooser fc;
     @FXML
     private TextField txtPPagina;
     @FXML
@@ -189,6 +203,8 @@ public class ControllerPrincipal extends Component implements Initializable {
     @FXML
     private ObservableList<String> listaBuscarUsuario;
     @FXML
+    private ObservableList<String> listaBuscarPedidos;
+    @FXML
     private ObservableList<PedidosDTO> listaPedidos;
     @FXML
     private final CatalogoInterface daoCatalogo = DAOFactory.getCatalogoDAO();
@@ -202,15 +218,18 @@ public class ControllerPrincipal extends Component implements Initializable {
     private final ListaPrecioInterface listaPre = DAOFactory.getListaPrecioDAO();
     @FXML
     private final PedidoInterface pedido = DAOFactory.getPedidoDAO();
+    private FileChooser filechooser;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         MostrarLista();
         MostrarListaCatalogo();
         mostrarUsuario();
+        buscarPedidos();
         listaRol();
         listaBuscarUsuario();
         mostrarPedidos();
+        Importar();
     }
 
     //Lista de roles
@@ -279,16 +298,16 @@ public class ControllerPrincipal extends Component implements Initializable {
     //Registra al promotor
     @FXML
     private void Registrar(ActionEvent event) {
-        PromotorDTO p = IngresarDatos();
+        PromotorDTO p=IngresarDatos();
         if (txtDni.getText().isEmpty() || txtNombres.getText().isEmpty() ||
                 txtApellidos.getText().isEmpty() || txtDireccion.getText().isEmpty()
                 || txtRecomendado.getText().isEmpty() || txtTelefono.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Error. Datos Vacios", "Error", 1);
         } else {
             if (txtDni.equals(p.getDni()))
-                dao.grabar(p);
+                JOptionPane.showMessageDialog(null,dao.grabar(p),"Registrar",1);
             else
-                dao.grabar(p);
+                JOptionPane.showMessageDialog(null,dao.grabar(p),"Registrar",1);
         }
         vaciarTexto();
         MostrarLista();
@@ -307,13 +326,12 @@ public class ControllerPrincipal extends Component implements Initializable {
     //Ingresa datos del promotor
     private PromotorDTO IngresarDatos() {
         LocalDate fechaNacimiento=dpFechaNacimiento.getValue();
-        String formato=fechaNacimiento.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         PromotorDTO p = new PromotorDTO(txtDni.getText(),
                 txtNombres.getText(),
                 txtApellidos.getText(),
                 txtDireccion.getText(),
                 txtTelefono.getText(),
-                LocalDate.parse(formato),
+                fechaNacimiento,
                 txtRecomendado.getText(),
                 LocalDate.now());
         return p;
@@ -340,7 +358,7 @@ public class ControllerPrincipal extends Component implements Initializable {
             int i = JOptionPane.showOptionDialog(null, "Seguro que desea modificar el registro", "Modificar",
                     JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
             if (i == 0) {
-                dao.modificar(p);
+                JOptionPane.showMessageDialog(null,dao.modificar(p),"Modificado",1);
             }
         }
         vaciarTexto();
@@ -359,6 +377,7 @@ public class ControllerPrincipal extends Component implements Initializable {
             txtApellidos.setText(promotorDTO.getApellido());
             txtDireccion.setText(promotorDTO.getDireccion());
             txtTelefono.setText(promotorDTO.getTelefono());
+            dpFechaNacimiento.getEditor().setText(String.valueOf(promotorDTO.getFechaNacimiento()));
             txtRecomendado.setText(promotorDTO.getRecomendado());
         }
 
@@ -675,14 +694,23 @@ public class ControllerPrincipal extends Component implements Initializable {
     //Importar Precios de los catalogos
     @FXML
     private void importarPrecios(ActionEvent actionEvent) {
-        fc = new JFileChooser();
-        String r = "";
-        int seleccion = fc.showOpenDialog(this);
-        if (seleccion == JFileChooser.APPROVE_OPTION) {
-            File f = fc.getSelectedFile();
-            r = listaPre.Importar(f);
-            JOptionPane.showMessageDialog(null, r);
+        String r;
+        filechooser=new FileChooser();
+        Window stage=btnImportar.getScene().getWindow();
+        filechooser.setTitle("Importar Precios");
+        filechooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(
+                "Excel","*,xlsx","xlx"
+        ));
+        try {
+            File file=filechooser.showOpenDialog(stage);
+            filechooser.setInitialDirectory(file.getParentFile());
+            r=listaPre.Importar(file);
+        }catch (Exception e){
+
         }
+    }
+    private void Importar(){
+
     }
 
     //Muestra los catalogos en el combobox
@@ -722,9 +750,9 @@ public class ControllerPrincipal extends Component implements Initializable {
         List<PedidosDTO> listar = pedido.listar();
             listaPedidos = FXCollections.observableArrayList();
             tcPedidoID.setCellValueFactory(new PropertyValueFactory<>("idPedido"));
-            tcPedidoDni.setCellValueFactory(new PropertyValueFactory<>("dniPromotor"));
-            tcPedidoNombres.setCellValueFactory(new PropertyValueFactory<>("nombrepromotor"));
-            tcPedidosApellido.setCellValueFactory(new PropertyValueFactory<>("apepromotor"));
+            tcPedidoDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
+            tcPedidoNombres.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+            tcPedidosApellido.setCellValueFactory(new PropertyValueFactory<>("apellido"));
             tcPedidosCatalogo.setCellValueFactory(new PropertyValueFactory<>("nomCatalogo"));
             tcPedidoPagina.setCellValueFactory(new PropertyValueFactory<>("pagina"));
             tcPedidosCodigo.setCellValueFactory(new PropertyValueFactory<>("codProducto"));
@@ -739,14 +767,82 @@ public class ControllerPrincipal extends Component implements Initializable {
 
     @FXML
     private void RegistrarPedidos(ActionEvent actionEvent) {
+        String result="";
+        try {
+            PedidosDTO pedidos=datosPedido();
+            if(txtPPagina.getText().isEmpty() || txtPCodigo.getText().isEmpty() || txtPColor.getText().isEmpty() ||
+                txtPMarca.getText().isEmpty() ||txtPPrecio.getText().isEmpty() || txtPTalla.getText().isEmpty() ||
+                cmbPromotorPedido.getEditor().getText().isEmpty() || cmbCatalogosP.getEditor().getText().isEmpty()){
+                Error();
+            }else{
+                result=pedido.grabar(pedidos);
+                JOptionPane.showMessageDialog(null,result,"Registrar",1);
+                mostrarPedidos();
+            }
+        }catch (NumberFormatException number){
+            JOptionPane.showMessageDialog(null, "Error. La pagina o precio no puede ir letras", "Error", 1);
+            txtPPagina.setText("");
+        }
+
     }
+
+    private PedidosDTO datosPedido(){
+        PedidosDTO pedidos=new PedidosDTO();
+        pedidos.setDni(cmbPromotorPedido.getValue());
+        pedidos.setNombre(txtNombrePromotorPedido.getText());
+        pedidos.setApellido(txtApellidoPromotorPedido.getText());
+        pedidos.setNomCatalogo(cmbCatalogosP.getValue());
+        pedidos.setPagina(Integer.parseInt(txtPPagina.getText()));
+        pedidos.setCodProducto(txtPCodigo.getText());
+        pedidos.setMarca(txtPMarca.getText());
+        pedidos.setColor(txtPColor.getText());
+        pedidos.setTalla(txtPTalla.getText());
+        pedidos.setPrecio(Double.parseDouble(txtPPrecio.getText()));
+        pedidos.setFechaPedido(LocalDate.now());
+        return pedidos;
+    }
+
+
+
+
+    
 
     @FXML
     private void ModificarPedidos(ActionEvent actionEvent) {
+        String result;
+        try {
+            //Icon icono=new ImageIcon(getClass().getResource("../img/alerta.png"));
+            IconTest icon=new IconTest();
+            PedidosDTO pedidos=datosPedido();
+            pedidos.setIdPedido(Integer.parseInt(lblIdpedido.getText()));
+            if(txtPPagina.getText().isEmpty() || txtPCodigo.getText().isEmpty() || txtPColor.getText().isEmpty() ||
+                    txtPMarca.getText().isEmpty() ||txtPPrecio.getText().isEmpty() || txtPTalla.getText().isEmpty()){
+                Error();
+            }else{
+                int i = JOptionPane.showOptionDialog(null, "Seguro que desea modificar el registro", "Modificar",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, icon, null, null);
+                if (i == 0) {
+                    JOptionPane.showMessageDialog(null,pedido.modificar(pedidos),"Modificar",1);
+                }
+            }
+        }catch (NumberFormatException number){
+            JOptionPane.showMessageDialog(null, "Error. La pagina no puede ir letras", "Error", 1);
+            txtPPagina.setText("");
+        }
+        mostrarPedidos();
+        limpiarpedidos();
     }
 
     @FXML
     private void EliminarPedidos(ActionEvent actionEvent) {
+        String id=lblIdpedido.getText();
+        int i = JOptionPane.showOptionDialog(null, "Seguro que desea Eliminar el registro", "Eliminar",
+                JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.ICON_PROPERTY);
+        if (i == 0) {
+            JOptionPane.showMessageDialog(null,pedido.eliminar(id),"Eliminar",1);
+        }
+        mostrarPedidos();
+        limpiarpedidos();
     }
 
     @FXML
@@ -758,21 +854,120 @@ public class ControllerPrincipal extends Component implements Initializable {
 
     @FXML
     private void ListaPedidos(MouseEvent mouseEvent) {
+        PedidosDTO pedidos = tblDatosPedidos.getSelectionModel().getSelectedItem();
+        if (pedidos == null) {
+            MostrarLista();
+        } else {
+            lblIdpedido.setText(String.valueOf(pedidos.getIdPedido()));
+            cmbPromotorPedido.getSelectionModel().select(pedidos.getDni());
+            txtApellidoPromotorPedido.setText(pedidos.getApellido());
+            txtNombrePromotorPedido.setText(pedidos.getNombre());
+            cmbCatalogosP.getSelectionModel().select(pedidos.getNomCatalogo());
+            txtPCodigo.setText(pedidos.getCodProducto());
+            txtPPagina.setText(String.valueOf(pedidos.getPagina()));
+            txtPMarca.setText(pedidos.getMarca());
+            txtPColor.setText(pedidos.getColor());
+            txtPPrecio.setText(String.valueOf(pedidos.getPrecio()));
+            txtPTalla.setText(pedidos.getTalla());
+
+        }
+
     }
 
     @FXML
     private void MostrarPrecios(ActionEvent actionEvent) {
+
+    }
+
+    private void limpiarpedidos(){
+        txtNombrePromotorPedido.setText("");
+        txtApellidoPromotorPedido.setText("");
+        txtPPagina.setText("");
+        txtPPrecio.setText("");
+        txtPMarca.setText("");
+        txtPTalla.setText("");
+        txtPColor.setText("");
+        txtPCodigo.setText("");
+        cmbPromotorPedido.getSelectionModel().select("");
+        cmbCatalogosP.getSelectionModel().select("");
     }
 
     @FXML
     private void LimpiarPedidos(ActionEvent actionEvent) {
+        limpiarpedidos();
     }
 
     @FXML
     private void muestraPromotorPedido(MouseEvent mouseEvent) {
+
         List<PromotorDTO> listar = dao.listar();
         cmbPromotor = FXCollections.observableArrayList();
         listar.forEach(a -> cmbPromotor.addAll(a.getDni()));
         cmbPromotorPedido.setItems(cmbPromotor);
+
+
+    }
+
+    @FXML
+    private void buscaPromotor(ActionEvent actionEvent) {
+        String dni;
+        PromotorDTO p;
+        if(cmbPromotorPedido.getValue()==null || cmbPromotorPedido.getEditor().getText().isEmpty()){
+            txtNombrePromotorPedido.setText("");
+            txtApellidoPromotorPedido.setText("");
+
+        }else {
+            dni=cmbPromotorPedido.getValue();
+            p=dao.buscar(dni);
+            txtNombrePromotorPedido.setText(p.getNombre());
+            txtApellidoPromotorPedido.setText(p.getApellido());
+        }
+
+    }
+
+    private void buscarPedidos(){
+        listaBuscarPedidos=FXCollections.observableArrayList("DNI","Catalogo");
+        cmbBuscarPedido.setItems(listaBuscarPedidos);
+    }
+
+    @FXML
+    private void buscarPedidos(MouseEvent mouseEvent) {
+        mostrarPedidos();
+        FilteredList<PedidosDTO> filtrar = new FilteredList<>(listaPedidos, b -> true);
+        txtBPedidos.textProperty().addListener((ObservableList, oldValue, newValue) -> {
+            filtrar.setPredicate(pedidos -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (cmbBuscarPedido.getValue() != null) {
+                    switch (cmbBuscarPedido.getValue()) {
+                        //Filtrar Por Nombre del Usuario
+                        case "DNI": {
+                            return pedidos.getDni().toLowerCase().contains(lowerCaseFilter);
+                        }
+                        //Filtrar por apellido del Usuario
+                        case "Catalogo": {
+                            return pedidos.getNomCatalogo().toLowerCase().contains(lowerCaseFilter);
+                        }
+                    }
+                } else {
+                    //Muestra la lista de usuarios
+                    mostrarUsuario();
+                }
+                return false;
+            });
+        });
+        SortedList<PedidosDTO> sorted = new SortedList<>(filtrar);
+        sorted.comparatorProperty().bind(tblDatosPedidos.comparatorProperty());
+        tblDatosPedidos.setItems(sorted);
+    }
+    @FXML
+    private void limitarCaracteres(KeyEvent keyEvent) {
+        if(txtDni.getText().length()>=8){
+            keyEvent.consume();
+            Toolkit.getDefaultToolkit().beep();
+        }
     }
 }

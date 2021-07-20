@@ -2,6 +2,8 @@ package cassuz.examples.com.interfaces;
 
 import cassuz.examples.com.DTO.PromotorDTO;
 
-public interface PromotorInterface extends EntidadInterface<PromotorDTO>{
+import java.util.List;
 
+public interface PromotorInterface extends EntidadInterface<PromotorDTO>{
+    public PromotorDTO buscar(Object id);
 }

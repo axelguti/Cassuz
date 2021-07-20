@@ -1,7 +1,7 @@
 create database BDCASSUZ;
 use BDCASSUZ;
 
-drop table tblpromotor
+
 /*tablas Promotor*/
 CREATE TABLE tblpromotor(
 	
@@ -15,7 +15,6 @@ CREATE TABLE tblpromotor(
 	fechainscpromotor date);
 
 /*Crear PROMOTOR*/
-drop procedure SP_C_PROMOTOR
 create procedure SP_C_PROMOTOR(
 @dnipromotor as varchar(8),
 @nompromotor as varchar(30),
@@ -33,7 +32,6 @@ values(@dnipromotor,@nompromotor,@apepromotor,@direccpromotor,@telefpromotor,@fe
 
 end;
 
-drop procedure SP_U_PROMOTOR
 /*Modificar promotor*/
 create procedure SP_U_PROMOTOR(
 @dnipromotor as varchar(8),
@@ -69,7 +67,22 @@ END;
 /* Mostrar Promotores*/
 create procedure SP_R_PROMOTOR
 as
+begin
 select * from tblpromotor;
+end
+
+drop procedure SP_B_PROMOTOR
+/*Buscar Promotor*/
+create procedure SP_B_PROMOTOR(@dnipromotor varchar(8))
+as
+begin
+
+select nompromotor,apepromotor from tblpromotor where dnipromotor=@dnipromotor
+
+end
+
+exec SP_B_PROMOTOR '75484126'
+
 
 /*tabla Rol*/
 create table tblrol(
@@ -89,8 +102,7 @@ select * from tblrol
 
 end
 
-exec SP_R_ROLUSUARIO
-drop procedure SP_R_ROLUSUARIO
+
 
 /*tablas Usuarios*/
 create table tblusuario(
@@ -105,6 +117,7 @@ foreign key (idrol) references tblrol (idrol));
 insert into tblusuario values('Axel','Gutierrez Palomino','959901920','Axl','1234',1)
 select tblrol.idrol,nomrol,usuariosusuario from tblusuario inner join tblrol on tblusuario.idrol=tblrol.idrol
 
+drop procedure SP_C_USUARIO
 /*Crear Usaurio*/
 create procedure SP_C_USUARIO(
 @nomusaurio as varchar(150),
@@ -116,9 +129,9 @@ create procedure SP_C_USUARIO(
 as
 begin
 
-insert into tblusuario(nomusuario,apeusuario,telefusuario,usuariosusuario,
-contrausaurio,idrol) values(@nomusaurio,@apeusuario,@telefusuario,@usuariosusuario,
-@contrausaurio,@idrol)
+insert into tblusuario select @nomusaurio,@apeusuario,@telefusuario,@usuariosusuario,
+@contrausaurio,@idrol from tblusuario inner join tblrol on
+tblusuario.idrol=tblrol.idrol where nomrol=@nomrol
 
 end
 
@@ -160,7 +173,7 @@ begin
 delete from tblusuario where usuariosusuario=@usuariosusuario;
 end
 
-drop table tblcatalogo
+
 /*tablas catalogo*/
 create table tblcatalogo(
 idcatalogo int  primary key Identity,
@@ -224,7 +237,7 @@ delete from tblcatalogo where idcatalogo=@idcatalogo
 
 end;
 
-DROP TABLE tbllistaprecio
+
 /*tabla de listas de precios*/
 create table tbllistaprecio(
 idproducto int primary key identity,
@@ -234,8 +247,8 @@ codproducto nvarchar(50),
 colorproducto VARCHAR(50),
 preciopublicoproducto decimal(7,2),
 preciopromotorproducto decimal(7,2),
-nomcatalog varchar(50),
-foreign key (nomcatalog) references tblcatalogo(nomcatalogo));
+nomcatalog int,
+foreign key (nomcatalog) references tblcatalogo(idcatalogo));
 
 
 drop table tblpedido
@@ -247,63 +260,89 @@ pagcatalogo int,
 marcaproducto varchar(50),
 colorproducto varchar(50),
 tallaproducto varchar(5),
-precioproducto decimal(3,2),
+precioproducto decimal(7,2),
 dnipromotor varchar(8),
 codproducto varchar(15),
 idcatalogo int,
 foreign key (dnipromotor) references tblpromotor(dnipromotor),
 foreign key (idcatalogo) references tblcatalogo(idcatalogo))
 
-drop procedure SP_C_PEDIDO
+select * from tblpedido
+insert into tblpedido(dnipromotor,idcatalogo,pagcatalogo,codproducto,marcaproducto,colorproducto,tallaproducto,precioproducto,fechapedido) values('75484126',1,'10','154145','m','rojo','x',100,'2021-10-12')
 /*Registrar Pedido*/
+drop procedure SP_C_PEDIDO
 create procedure SP_C_PEDIDO(
-@dnipromotor varchar(8),
-@fechapedido date,
-@dnipromotor varchar(8),
-@codproducto varchar(4))
+@dnipromotor as varchar(8),
+@idcatalogo int,
+@pagcatalogo int,
+@codproducto varchar(15),
+@marcaproducto varchar(50),
+@colorproducto varchar(50),
+@tallaproducto varchar(5),
+@precioproducto decimal(3,2),
+@fechapedido as date)
 as
 begin
 
-insert into tblpedido values(@fechapedido,@dnipromotor,@codproducto)
-
+insert into tblpedido(dnipromotor,idcatalogo,pagcatalogo,codproducto,
+			marcaproducto,colorproducto,tallaproducto,precioproducto,
+			fechapedido) values(@dnipromotor,@idcatalogo,@pagcatalogo,@codproducto,
+			@marcaproducto,@colorproducto,@tallaproducto,@precioproducto,@fechapedido)
 
 end
 
-drop procedure SP_R_PEDIDO
+exec SP_R_PROMOTOR
+exec SP_R_CATALOGO
+
+DRop procedure SP_R_PEDIDO
 /*Mostrar Pedidos*/
 create procedure SP_R_PEDIDO
 as
 begin 
 
-select idpedido,tblpromotor.dnipromotor,tblpromotor.nompromotor,
-tblpromotor.apepromotor,tblproducto.nomcatalogo,tblproducto.codproducto,colorproducto,talla,precio,
-fechainscpromotor
-from tblpedido inner join tblpromotor on
-tblpromotor.dnipromotor=tblpedido.dnipromotor inner join tblproducto on
-tblproducto.codproducto=tblpedido.codproducto
+select idpedido,tblpromotor.dnipromotor,nompromotor,apepromotor,tblcatalogo.nomcatalogo,
+pagcatalogo,codproducto,marcaproducto,colorproducto,marcaproducto,precioproducto,fechapedido from tblpedido inner join tblpromotor on tblpedido.dnipromotor=tblpromotor.dnipromotor inner join 
+tblcatalogo on tblpedido.idcatalogo=tblcatalogo.idcatalogo order by idpedido asc
+
+
+end
+
+exec SP_R_PEDIDO
+drop procedure SP_U_PEDIDO
+/*modificar pedido*/
+create procedure SP_U_PEDIDO(
+@idpedido int,
+@dnipromotor as varchar(8),
+@nomcatalogo as varchar(50),
+@pagcatalogo int,
+@codproducto varchar(15),
+@marcaproducto varchar(50),
+@colorproducto varchar(50),
+@tallaproducto varchar(5),
+@precioproducto decimal(7,2))
+as
+begin
+
+update tblpedido set dnipromotor=@dnipromotor,
+					 idcatalogo=(select idcatalogo from tblcatalogo where nomcatalogo=@nomcatalogo),
+					 pagcatalogo=@pagcatalogo,
+					 codproducto=@codproducto,
+					 marcaproducto=@marcaproducto,
+					 colorproducto=@colorproducto,
+					 tallaproducto=@tallaproducto,
+					 precioproducto=@precioproducto
+where idpedido=@idpedido
+
+end
+
+/*Eliminar Pedido Store Procedure*/
+create procedure SP_D_PEDIDO(@idpedido int)
+as
+begin
+
+delete from tblpedido where idpedido=@idpedido
 
 end
 
 
 /*Pruebas de los procedimientos*/
-exec SP_C_CATALOGO 'Fravia','123','959901920'
-exec SP_R_CATALOGO
-exec SP_U_CATALOGO 'xD','123','123456789' 
-exec SP_D_CATALOGO 2
- 
- select * from tblusuario
- delete from tblusuario where usuariosusuario='Airton'
-exec SP_C_USUARIO '1234','Gutierrez Palomino','959901920','1234','1234',2
-exec SP_R_USUARIO 
-exec SP_U_USUARIO 'Aasd','adsdss','45677895','Axl','1234',1
-exec SP_D_USUARIO 'Axel'
-
-
-exec SP_C_PROMOTOR '75484124','Axel','Gutierrez Palomino','jr san carlos','959901920','axelgupa18@gmail.com','karin quispe','2026-10-26';
-exec SP_R_PROMOTOR;
-exec SP_U_PROMOTOR '75484126','Axel','Gutierrez Palomino','jr san carlos','99225646','axelguty@gmail.com','karin quispe';
-exec SP_D_PROMOTOR '75484126';
-exec SP_B_BUSCAR '75484126'
-     
-exec SP_R_PRODUCTO
-exec SP_R_PEDIDO

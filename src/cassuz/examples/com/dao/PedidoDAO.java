@@ -25,11 +25,11 @@ public class PedidoDAO implements PedidoInterface {
         try{
             cn= Conexion.getConexion();
             stm = Objects.requireNonNull(cn).prepareCall("EXEC SP_C_PEDIDO ?,?,?,?,?,?,?,?,?");
-            stm.setString(1, pedidosDTO.getDniPromotor());
+            stm.setString(1, pedidosDTO.getDni());
             stm.setString(2, pedidosDTO.getNomCatalogo());
-            stm.setString(3, pedidosDTO.getCodProducto());
-            stm.setString(4, pedidosDTO.getMarca());
-            stm.setInt(5, pedidosDTO.getPagina());
+            stm.setInt(3, pedidosDTO.getPagina());
+            stm.setString(4, pedidosDTO.getCodProducto());
+            stm.setString(5, pedidosDTO.getMarca());
             stm.setString(6, pedidosDTO.getColor());
             stm.setString(7, pedidosDTO.getTalla());
             stm.setDouble(8, pedidosDTO.getPrecio());
@@ -47,12 +47,45 @@ public class PedidoDAO implements PedidoInterface {
 
     @Override
     public String modificar(PedidosDTO pedidosDTO) {
-        return null;
+        String result ="";
+        try {
+            cn =Conexion.getConexion();
+            stm = Objects.requireNonNull(cn).prepareCall("EXEC SP_U_PEDIDO ?,?,?,?,?,?,?,?,?");
+            stm.setInt(1, pedidosDTO.getIdPedido());
+            stm.setString(2, pedidosDTO.getDni());
+            stm.setString(3, pedidosDTO.getNomCatalogo());
+            stm.setInt(4, pedidosDTO.getPagina());
+            stm.setString(5, pedidosDTO.getCodProducto());
+            stm.setString(6, pedidosDTO.getMarca());
+            stm.setString(7, pedidosDTO.getColor());
+            stm.setString(8, pedidosDTO.getTalla());
+            stm.setDouble(9, pedidosDTO.getPrecio());
+            stm.executeUpdate();
+            result="Pedido Modificado Exitosamente";
+            stm.close();
+            cn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
     }
 
     @Override
     public String eliminar(Object id) {
-        return null;
+        String result="";
+
+        try {
+            cn=Conexion.getConexion();
+            stm= cn.prepareCall("exec SP_D_PEDIDO ?");
+            stm.setString(1,id.toString());
+            stm.executeUpdate();
+            result="Registro Eliminado Satisfactoriamente";
+            stm.close();
+            cn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
     }
 
     @Override
@@ -67,11 +100,11 @@ public class PedidoDAO implements PedidoInterface {
             while(rs.next()){
                 p=new PedidosDTO();
                 p.setIdPedido(rs.getInt("idpedido"));
-                p.setDniPromotor(rs.getString("dnipromotor"));
-                p.setNombrepromotor(rs.getString("nompromotor"));
-                p.setApepromotor(rs.getString("apepromotor"));
+                p.setDni(rs.getString("dnipromotor"));
+                p.setNombre(rs.getString("nompromotor"));
+                p.setApellido(rs.getString("apepromotor"));
                 p.setNomCatalogo(rs.getString("nomcatalogo"));
-                p.setPagina(Integer.parseInt(rs.getString("pagcatalogo")));
+                p.setPagina(rs.getInt("pagcatalogo"));
                 p.setCodProducto(rs.getString("codproducto"));
                 p.setMarca(rs.getString("marcaproducto"));
                 p.setColor(rs.getString("colorproducto"));

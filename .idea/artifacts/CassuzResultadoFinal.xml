@@ -17,10 +17,6 @@
           <element id="file-copy" path="$PROJECT_DIR$/out/artifacts/META-INF/MANIFEST.MF" />
         </element>
         <element id="module-output" name="CassuzResultadoFinal" />
-        <element id="library" level="project" name="mssql-jdbc-9.2.1.jre8" />
-        <element id="library" level="project" name="jfoenix-8.0.10" />
-        <element id="library" level="project" name="fontawesomefx-8.9" />
-        <element id="library" level="project" name="auxiliary" />
       </element>
     </root>
   </artifact>

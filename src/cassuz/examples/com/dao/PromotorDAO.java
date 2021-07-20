@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  *
@@ -28,7 +29,8 @@ public class PromotorDAO implements PromotorInterface {
 
     public void ValidarDNI(String dni) throws ExcepcionDNI {
         List<PromotorDTO> list=listar();
-        Optional<PromotorDTO> op=list.stream().filter(a->a.getDni().equals(dni)).findFirst();
+        Predicate<PromotorDTO> pred=a->a.getDni().equals(dni);
+        Optional<PromotorDTO> op=list.stream().filter(pred).findFirst();
         if(op.isPresent()){
             throw new ExcepcionDNI("Error: DNI ya existe");
         }
@@ -49,12 +51,12 @@ public class PromotorDAO implements PromotorInterface {
             stn.setString(6, t.getFechaNacimiento().toString());
             stn.setString(7,t.getRecomendado());
             stn.setString(8,t.getFechaInscripcion().toString());
-            int f=stn.executeUpdate();
-            result="se afecto "+f+" filas";
+            stn.executeUpdate();
+            result="Registro Agregado Satisfactoriamente";
             stn.close();
             cn.close();
         }catch(SQLException ex){
-            result=ex.getMessage();
+            result="Error: DNI ya existe";
         }
         return result;
     }
@@ -72,9 +74,8 @@ public class PromotorDAO implements PromotorInterface {
             stn.setString(5,t.getTelefono());
             stn.setString(6, t.getFechaNacimiento().toString());
             stn.setString(7,t.getRecomendado());
-            stn.setString(8,t.getFechaInscripcion().toString());
-            int f=stn.executeUpdate();
-            result="Se afecto "+f+" filas";
+            stn.executeUpdate();
+            result="Registro Modificado Satisfactoriamente";
             stn.close();
             cn.close();
         } catch (SQLException throwables) {
@@ -90,8 +91,8 @@ public class PromotorDAO implements PromotorInterface {
             cn=Conexion.getConexion();
             stn=cn.prepareCall("exec SP_D_PROMOTOR ?");
             stn.setString(1,id.toString());
-            int f=stn.executeUpdate();
-            result="Se afecto"+f+"filas";
+            stn.executeUpdate();
+            result="Registro Eliminado Satisfactoriamente";
             stn.close();
             cn.close();
         }catch (SQLException ex) {
@@ -123,5 +124,24 @@ public class PromotorDAO implements PromotorInterface {
             ex.printStackTrace();
         }
         return lista;
+    }
+
+    @Override
+    public PromotorDTO buscar(Object id) {
+        PromotorDTO obj=null;
+        try {
+            cn=Conexion.getConexion();
+            stn= Objects.requireNonNull(cn).prepareCall("exec SP_B_PROMOTOR ?");
+            stn.setString(1,id.toString());
+            ResultSet rs= stn.executeQuery();
+            while(rs.next()){
+                obj=new PromotorDTO();
+                obj.setNombre(rs.getString("nompromotor"));
+                obj.setApellido(rs.getString("apepromotor"));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return obj;
     }
 }

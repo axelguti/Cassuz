@@ -2,10 +2,7 @@ package cassuz.examples.com.DTO;
 
 import java.time.LocalDate;
 
-public class PedidosDTO {
-    private String dniPromotor;
-    private String nombrepromotor;
-    private String apepromotor;
+public class PedidosDTO extends PromotorDTO{
     private int idPedido;
     private LocalDate fechaPedido;
     private String nomCatalogo;
@@ -24,36 +21,12 @@ public class PedidosDTO {
         this.talla = talla;
     }
 
-    public String getDniPromotor() {
-        return dniPromotor;
-    }
-
     public String getNomCatalogo() {
         return nomCatalogo;
     }
 
     public void setNomCatalogo(String nomCatalogo) {
         this.nomCatalogo = nomCatalogo;
-    }
-
-    public void setDniPromotor(String dniPromotor) {
-        this.dniPromotor = dniPromotor;
-    }
-
-    public String getNombrepromotor() {
-        return nombrepromotor;
-    }
-
-    public void setNombrepromotor(String nombrepromotor) {
-        this.nombrepromotor = nombrepromotor;
-    }
-
-    public String getApepromotor() {
-        return apepromotor;
-    }
-
-    public void setApepromotor(String apepromotor) {
-        this.apepromotor = apepromotor;
     }
 
     public int getIdPedido() {

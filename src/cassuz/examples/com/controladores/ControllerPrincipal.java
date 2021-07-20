@@ -380,7 +380,6 @@ public class ControllerPrincipal extends Component implements Initializable {
             dpFechaNacimiento.getEditor().setText(String.valueOf(promotorDTO.getFechaNacimiento()));
             txtRecomendado.setText(promotorDTO.getRecomendado());
         }
-
     }
 
     //Busca al promotor

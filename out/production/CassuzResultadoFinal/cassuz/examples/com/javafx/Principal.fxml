@@ -19,7 +19,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane style="-fx-background-color: red;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cassuz.examples.com.controladores.ControllerPrincipal">
+<AnchorPane style="-fx-background-color: red;" xmlns="http://javafx.com/javafx/8.0.281" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cassuz.examples.com.controladores.ControllerPrincipal">
    <children>
       <TabPane layoutX="-6.0" prefHeight="791.0" prefWidth="1353.0" tabClosingPolicy="UNAVAILABLE">
          <tabs>

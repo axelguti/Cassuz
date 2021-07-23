@@ -31,13 +31,13 @@ public class CatalogoDAO implements CatalogoInterface {
         try {
             cn=Conexion.getConexion();
             stmt= Objects.requireNonNull(cn).prepareCall("exec SP_C_CATALOGO ?,?,?,?");
-            stmt.setString(1, String.valueOf(catalogoDTO.getFecha()));
+            stmt.setString(1, catalogoDTO.getEstado());
             stmt.setString(2, catalogoDTO.getNombre());
             stmt.setString(3, catalogoDTO.getRepresentante());
             stmt.setString(4, catalogoDTO.getTelefono());
 
             int f=stmt.executeUpdate();
-            result="se afecto "+f+" filas";
+            result="se Registro exitosamente";
             stmt.close();
             cn.close();
         } catch (SQLException throwables) {
@@ -54,12 +54,12 @@ public class CatalogoDAO implements CatalogoInterface {
             cn=Conexion.getConexion();
             stmt= Objects.requireNonNull(cn).prepareCall("exec SP_U_CATALOGO ?,?,?,?,?");
             stmt.setInt(1, catalogoDTO.getId());
-            stmt.setDate(2, Date.valueOf(catalogoDTO.getFecha()));
+            stmt.setString(2, catalogoDTO.getEstado());
             stmt.setString(3, catalogoDTO.getNombre());
             stmt.setString(4, catalogoDTO.getRepresentante());
             stmt.setString(5, catalogoDTO.getTelefono());
             int f=stmt.executeUpdate();
-            result="se afecto "+f+" filas";
+            result="Se modifico exitosamente";
             stmt.close();
             cn.close();
         } catch (SQLException throwables) {
@@ -76,7 +76,7 @@ public class CatalogoDAO implements CatalogoInterface {
             stmt= Objects.requireNonNull(cn).prepareCall("exec SP_D_CATALOGO ?");
             stmt.setString(1,id.toString());
             int f=stmt.executeUpdate();
-            result="Se afecto "+f+" filas";
+            result="Se elimino exitosamente";
             stmt.close();
             cn.close();
         }catch (SQLException ex) {
@@ -96,7 +96,7 @@ public class CatalogoDAO implements CatalogoInterface {
             while(rs.next()){
                 obj=new CatalogoDTO();
                 obj.setId(rs.getInt("idcatalogo"));
-                obj.setFecha(LocalDate.parse(rs.getString("fechacatalogo")));
+                obj.setEstado(rs.getString("estadocatalogo"));
                 obj.setNombre(rs.getString("nomcatalogo"));
                 obj.setRepresentante(rs.getString("reprecatalogo"));
                 obj.setTelefono(rs.getString("telefcatalogo"));

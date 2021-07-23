@@ -1,6 +1,7 @@
 package cassuz.examples.com.controladores;
 
 import cassuz.examples.com.beans.IconTest;
+import com.jfoenix.controls.JFXToggleButton;
 import javafx.animation.Interpolator;
 import cassuz.examples.com.DAOFactory.DAOFactory;
 import cassuz.examples.com.DTO.*;
@@ -24,8 +25,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.io.File;
 import java.net.URISyntaxException;
@@ -37,6 +39,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class ControllerPrincipal extends Component implements Initializable {
+    @FXML
+    private  JFXToggleButton estadoCatalogo;
+    @FXML
+    private TableColumn<CatalogoDTO,String> tcEstadoCatalogo;
     @FXML
     private ComboBox<String> cmbBuscarPedido;
     @FXML
@@ -230,6 +236,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         listaBuscarUsuario();
         mostrarPedidos();
         Importar();
+        toggleButton();
     }
 
     //Lista de roles
@@ -267,10 +274,10 @@ public class ControllerPrincipal extends Component implements Initializable {
         List<CatalogoDTO> listar = daoCatalogo.listar();
         listaCatalogoDTOS = FXCollections.observableArrayList();
         tcNumero.setCellValueFactory(new PropertyValueFactory<>("id"));
-        tcFechaIngresoCatalogo.setCellValueFactory(new PropertyValueFactory<>("fecha"));
         tcCatalogo.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         tcRepresentante.setCellValueFactory(new PropertyValueFactory<>("representante"));
         tcCTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+        tcEstadoCatalogo.setCellValueFactory(new PropertyValueFactory<>("buton"));
         listar.forEach(a -> listaCatalogoDTOS.addAll(a));
         tblDatosCatalogo.setItems(listaCatalogoDTOS);
     }
@@ -364,6 +371,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         vaciarTexto();
         MostrarLista();
     }
+
 
     //Mandar datos de la tabla a las cajas de texto
     @FXML
@@ -511,10 +519,10 @@ public class ControllerPrincipal extends Component implements Initializable {
     //Ingresa datos del catalogo
     private CatalogoDTO DatosCatalogo() {
         LocalDate fechaIngreso=dpFechaIngreso.getValue();
-        String formato=fechaIngreso.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String formato=fechaIngreso.format(DateTimeFormatter.ofPattern("yyyyMM"));
         CatalogoDTO c = new CatalogoDTO();
-        c.setFecha(LocalDate.parse(formato));
-        c.setNombre(txtCatalogo.getText());
+        c.getEstado();
+        c.setNombre(formato+"-"+txtCatalogo.getText());
         c.setRepresentante(txtRepresentante.getText());
         c.setTelefono(txtCTelefono.getText());
         return c;
@@ -557,6 +565,7 @@ public class ControllerPrincipal extends Component implements Initializable {
     private void ModificarCatalogo(ActionEvent actionEvent) {
         CatalogoDTO c = DatosCatalogo();
         c.setId(Integer.parseInt(txtIdCatalogo.getText()));
+        toggleButton();
         if (txtCatalogo.getText().isEmpty() || txtRepresentante.getText().isEmpty() ||
                 txtCTelefono.getText().isEmpty()) {
             Error();
@@ -569,6 +578,17 @@ public class ControllerPrincipal extends Component implements Initializable {
         }
         limpiarCatalogo();
         MostrarListaCatalogo();
+    }
+
+    private void toggleButton(){
+        CatalogoDTO cat=new CatalogoDTO();
+        estadoCatalogo=cat.getButon();
+
+            if(cat.getEstado().equalsIgnoreCase("Habilitado")){
+                estadoCatalogo.isSelected();
+            }else{
+                cat.setEstado("Deshabilitado");
+            }
     }
 
     //Busca catalogo
@@ -969,4 +989,6 @@ public class ControllerPrincipal extends Component implements Initializable {
             Toolkit.getDefaultToolkit().beep();
         }
     }
+
+
 }

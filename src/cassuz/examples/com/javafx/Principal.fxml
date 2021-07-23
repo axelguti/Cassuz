@@ -11,6 +11,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.Glow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -20,7 +21,7 @@
 
 <AnchorPane style="-fx-background-color: red;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cassuz.examples.com.controladores.ControllerPrincipal">
    <children>
-      <TabPane prefHeight="791.0" prefWidth="1353.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutX="-6.0" prefHeight="791.0" prefWidth="1353.0" tabClosingPolicy="UNAVAILABLE">
          <tabs>
             <Tab text="Promotor">
                <content>
@@ -213,17 +214,20 @@
                         </Pane>
                         <Pane layoutX="477.0" layoutY="44.0" prefHeight="673.0" prefWidth="839.0" style="-fx-background-color: white;">
                            <effect>
-                              <DropShadow height="19.89" radius="8.24" spread="0.29" width="15.07" />
+                              <Glow />
                            </effect>
                            <children>
                               <TableView fx:id="tblDatosCatalogo" layoutX="14.0" layoutY="73.0" onMouseClicked="#datosCatalogo" prefHeight="518.0" prefWidth="804.0">
                                  <columns>
-                                    <TableColumn fx:id="tcNumero" prefWidth="75.0" text="Nro" />
-                                    <TableColumn fx:id="tcCatalogo" prefWidth="208.0" text="Catalogo" />
-                                    <TableColumn fx:id="tcRepresentante" prefWidth="251.0" text="Representante" />
-                                    <TableColumn fx:id="tcCTelefono" prefWidth="130.0" text="Telefono" />
-                                    <TableColumn fx:id="tcFechaIngresoCatalogo" prefWidth="139.0" text="Fecha" />
+                                    <TableColumn fx:id="tcNumero" prefWidth="75.0" sortable="false" text="Nro" />
+                                    <TableColumn fx:id="tcCatalogo" prefWidth="103.0" sortable="false" text="Catalogo" />
+                                    <TableColumn fx:id="tcRepresentante" prefWidth="236.0" sortable="false" text="Representante" />
+                                    <TableColumn fx:id="tcCTelefono" prefWidth="135.0" text="Telefono" />
+                                    <TableColumn fx:id="tcEstadoCatalogo" prefWidth="130.0" sortable="false" text="Estado" />
                                  </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
                               </TableView>
                               <Label layoutX="178.0" layoutY="31.0" text="Buscar">
                                  <font>
@@ -323,17 +327,17 @@
                               </Label>
                            </children>
                         </Pane>
-                        <Label layoutX="468.0" layoutY="309.0" prefHeight="27.0" prefWidth="93.0" text="Buscar por">
+                        <Label layoutX="468.0" layoutY="322.0" prefHeight="27.0" prefWidth="93.0" text="Buscar por">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="txtBPedidos" layoutX="737.0" layoutY="310.0" onMouseClicked="#buscarPedidos" promptText="Buscar" />
+                        <TextField fx:id="txtBPedidos" layoutX="740.0" layoutY="323.0" onMouseClicked="#buscarPedidos" promptText="Buscar" />
                         <Button layoutX="1184.0" layoutY="75.0" onAction="#RegistrarPedidos" prefHeight="30.0" prefWidth="125.0" text="Registrar" />
                         <Button fx:id="btnModificarProductos" layoutX="1184.0" layoutY="145.0" onAction="#ModificarPedidos" prefHeight="30.0" prefWidth="125.0" text="Modificar" />
                         <Button layoutX="1184.0" layoutY="227.0" onAction="#EliminarPedidos" prefHeight="30.0" prefWidth="125.0" text="Eliminar" />
                         <Button fx:id="btnMostrarPedidos" layoutX="241.0" layoutY="719.0" mnemonicParsing="false" onAction="#mostrarPedidos" text="Mostrar" />
-                        <Pane layoutX="78.0" layoutY="22.0" prefHeight="267.0" prefWidth="430.0" style="-fx-background-color: white;">
+                        <Pane layoutX="78.0" layoutY="20.0" prefHeight="267.0" prefWidth="430.0" style="-fx-background-color: white;">
                            <effect>
                               <DropShadow height="53.62" radius="16.6725" spread="0.29" width="15.07">
                                  <color>
@@ -344,15 +348,19 @@
                            <children>
                               <ComboBox fx:id="cmbPromotorPedido" editable="true" layoutX="142.0" layoutY="49.0" onAction="#buscaPromotor" onMouseClicked="#muestraPromotorPedido" prefHeight="25.0" prefWidth="120.0" promptText="DNI" />
                               <Label layoutX="34.0" layoutY="53.0" text="DNI" />
-                              <Label layoutX="34.0" layoutY="124.0" text="Apellidos" />
-                              <Label layoutX="34.0" layoutY="195.0" text="Nombres" />
+                              <Label layoutX="34.0" layoutY="103.0" text="Apellidos" />
+                              <Label layoutX="34.0" layoutY="145.0" text="Nombres" />
                               <Label layoutX="177.0" layoutY="14.0" text="Promotor">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="txtApellidoPromotorPedido" layoutX="141.0" layoutY="120.0" prefHeight="25.0" prefWidth="253.0" promptText="Apellidos" />
-                              <TextField fx:id="txtNombrePromotorPedido" layoutX="140.0" layoutY="191.0" prefHeight="25.0" prefWidth="255.0" promptText="Nombres" />
+                              <TextField fx:id="txtApellidoPromotorPedido" layoutX="141.0" layoutY="99.0" prefHeight="25.0" prefWidth="253.0" promptText="Apellidos" />
+                              <TextField fx:id="txtNombrePromotorPedido" layoutX="140.0" layoutY="141.0" prefHeight="25.0" prefWidth="255.0" promptText="Nombres" />
+                              <Label layoutX="34.0" layoutY="188.0" prefHeight="17.0" prefWidth="71.0" text="Tipo Pago" />
+                              <TextField fx:id="txtNombrePromotorPedido2" layoutX="140.0" layoutY="184.0" prefHeight="25.0" prefWidth="255.0" promptText="Metodo de pago" />
+                              <ComboBox editable="true" layoutX="140.0" layoutY="225.0" prefWidth="150.0" />
+                              <Label layoutX="34.0" layoutY="229.0" prefHeight="17.0" prefWidth="35.0" text="Banco" />
                            </children>
                         </Pane>
                         <TableView fx:id="tblDatosPedidos" editable="true" layoutX="72.0" layoutY="357.0" onMouseClicked="#ListaPedidos" prefHeight="347.0" prefWidth="1261.0">
@@ -374,12 +382,12 @@
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                            </columnResizePolicy>
                         </TableView>
-                        <ComboBox fx:id="cmbBuscarPedido" layoutX="561.0" layoutY="310.0" prefWidth="150.0" promptText="Select" />
+                        <ComboBox fx:id="cmbBuscarPedido" layoutX="572.0" layoutY="323.0" prefWidth="150.0" promptText="Select" />
                      </children>
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab text="Consultar Pedidos">
+            <Tab text="Estado del Pedido">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -388,75 +396,8 @@
                               <Image url="@../img/asdsa.jpg" />
                            </image>
                         </ImageView>
-                        <Pane layoutX="533.0" layoutY="21.0" prefHeight="265.0" prefWidth="628.0" style="-fx-background-color: white;">
-                           <effect>
-                              <DropShadow height="53.62" radius="16.6725" spread="0.29" width="15.07">
-                                 <color>
-                                    <Color red="0.06578947603702545" green="0.020406920462846756" blue="0.020406920462846756" />
-                                 </color>
-                              </DropShadow>
-                           </effect>
-                           <children>
-                              <ComboBox fx:id="cmbCatalogosP1" editable="true" layoutX="84.0" layoutY="45.0" onMouseClicked="#cmbmuestracata" prefHeight="25.0" prefWidth="194.0" promptText="Catalogos" />
-                              <Label layoutX="22.0" layoutY="48.0" prefHeight="15.0" prefWidth="58.0" text="Catalogo" />
-                              <TextField fx:id="txtPPagina1" layoutX="373.0" layoutY="45.0" prefHeight="25.0" prefWidth="228.0" promptText="Pagina" />
-                              <TextField fx:id="txtPCodigo1" layoutX="84.0" layoutY="97.0" prefHeight="25.0" prefWidth="194.0" promptText="Codigo" />
-                              <TextField fx:id="txtPMarca1" layoutX="373.0" layoutY="97.0" prefHeight="25.0" prefWidth="228.0" promptText="Marca" />
-                              <Label layoutX="303.0" layoutY="101.0" prefHeight="17.0" prefWidth="65.0" text="Marca" />
-                              <TextField fx:id="txtPColor1" layoutX="84.0" layoutY="143.0" prefHeight="25.0" prefWidth="194.0" promptText="Color" />
-                              <TextField fx:id="txtPPrecio1" layoutX="373.0" layoutY="145.0" prefHeight="25.0" prefWidth="228.0" promptText="Precio" />
-                              <Label layoutX="303.0" layoutY="48.0" prefHeight="17.0" prefWidth="58.0" text="Pagina" />
-                              <Label layoutX="22.0" layoutY="101.0" prefHeight="17.0" prefWidth="46.0" text="Codigo" />
-                              <Label layoutX="22.0" layoutY="147.0" prefHeight="17.0" prefWidth="45.0" text="Color" />
-                              <Label layoutX="233.0" layoutY="8.0" prefHeight="35.0" prefWidth="90.0" text="Pedido N°">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="299.0" layoutY="147.0" prefHeight="17.0" prefWidth="43.0" text="Precio" />
-                              <Label layoutX="22.0" layoutY="193.0" prefHeight="17.0" prefWidth="28.0" text="Talla" />
-                              <TextField fx:id="txtPTalla1" layoutX="84.0" layoutY="189.0" prefHeight="25.0" prefWidth="194.0" promptText="Talla" />
-                              <Button layoutX="511.0" layoutY="199.0" onAction="#LimpiarPedidos" prefHeight="30.0" prefWidth="64.0" text="Limpiar" />
-                              <Label fx:id="lblIdpedido1" layoutX="337.0" layoutY="12.0" prefHeight="17.0" prefWidth="49.0">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </Pane>
-                        <Label layoutX="468.0" layoutY="309.0" prefHeight="27.0" prefWidth="93.0" text="Buscar por">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="txtBPedidos2" layoutX="737.0" layoutY="310.0" onMouseClicked="#buscarPedidos" promptText="Buscar" />
-                        <Button layoutX="1184.0" layoutY="75.0" onAction="#RegistrarPedidos" prefHeight="30.0" prefWidth="125.0" text="Registrar" />
-                        <Button fx:id="btnModificarProductos2" layoutX="1184.0" layoutY="145.0" onAction="#ModificarPedidos" prefHeight="30.0" prefWidth="125.0" text="Modificar" />
-                        <Button layoutX="1184.0" layoutY="227.0" onAction="#EliminarPedidos" prefHeight="30.0" prefWidth="125.0" text="Eliminar" />
                         <Button fx:id="btnMostrarPedidos1" layoutX="241.0" layoutY="719.0" mnemonicParsing="false" onAction="#mostrarPedidos" text="Mostrar" />
-                        <Pane layoutX="78.0" layoutY="22.0" prefHeight="267.0" prefWidth="430.0" style="-fx-background-color: white;">
-                           <effect>
-                              <DropShadow height="53.62" radius="16.6725" spread="0.29" width="15.07">
-                                 <color>
-                                    <Color red="0.06578947603702545" green="0.020406920462846756" blue="0.020406920462846756" />
-                                 </color>
-                              </DropShadow>
-                           </effect>
-                           <children>
-                              <ComboBox fx:id="cmbPromotorPedido2" editable="true" layoutX="142.0" layoutY="49.0" onAction="#buscaPromotor" onMouseClicked="#muestraPromotorPedido" prefHeight="25.0" prefWidth="120.0" promptText="DNI" />
-                              <Label layoutX="34.0" layoutY="53.0" text="DNI" />
-                              <Label layoutX="34.0" layoutY="124.0" text="Apellidos" />
-                              <Label layoutX="34.0" layoutY="195.0" text="Nombres" />
-                              <Label layoutX="177.0" layoutY="14.0" text="Promotor">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="txtApellidoPromotorPedido2" layoutX="141.0" layoutY="120.0" prefHeight="25.0" prefWidth="253.0" promptText="Apellidos" />
-                              <TextField fx:id="txtNombrePromotorPedido2" layoutX="140.0" layoutY="191.0" prefHeight="25.0" prefWidth="255.0" promptText="Nombres" />
-                           </children>
-                        </Pane>
-                        <TableView fx:id="tblDatosPedidos2" editable="true" layoutX="72.0" layoutY="357.0" onMouseClicked="#ListaPedidos" prefHeight="347.0" prefWidth="1261.0">
+                        <TableView fx:id="tblDatosPedidos2" editable="true" layoutX="21.0" layoutY="61.0" onMouseClicked="#ListaPedidos" prefHeight="641.0" prefWidth="1261.0">
                            <columns>
                               <TableColumn fx:id="tcPedidoID2" editable="false" prefWidth="42.0" resizable="false" text="N°" />
                               <TableColumn fx:id="tcPedidoDni2" editable="false" prefWidth="96.0" text="DNI" />
@@ -469,13 +410,12 @@
                               <TableColumn fx:id="tcPedidosColor1" minWidth="0.0" prefWidth="97.0" resizable="false" text="Color" />
                               <TableColumn fx:id="tcPedidosTalla1" minWidth="0.0" prefWidth="68.0" resizable="false" sortable="false" text="Talla" />
                               <TableColumn fx:id="tcPedidosPrecio1" minWidth="0.0" prefWidth="68.0" resizable="false" text="Precio" />
-                              <TableColumn fx:id="tcFechaPedido1" minWidth="0.0" prefWidth="73.0" resizable="false" sortable="false" text="Fecha" />
+                              <TableColumn fx:id="tcFechaPedido1" minWidth="0.0" prefWidth="72.0" resizable="false" sortable="false" text="Fecha" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                            </columnResizePolicy>
                         </TableView>
-                        <ComboBox fx:id="cmbBuscarPedido2" layoutX="561.0" layoutY="310.0" prefWidth="150.0" promptText="Select" />
                      </children>
                   </AnchorPane>
                </content>
@@ -489,7 +429,7 @@
                               <Image url="@../img/asdsa.jpg" />
                            </image>
                         </ImageView>
-                        <Pane layoutX="54.0" layoutY="86.0" prefHeight="267.0" prefWidth="430.0" style="-fx-background-color: white;">
+                        <Pane layoutX="77.0" layoutY="173.0" prefHeight="267.0" prefWidth="430.0" style="-fx-background-color: white;">
                            <effect>
                               <DropShadow height="53.62" radius="16.6725" spread="0.29" width="15.07">
                                  <color>
@@ -529,9 +469,27 @@
                         </Label>
                         <TextField fx:id="txtBPedidos1" layoutX="1005.0" layoutY="33.0" onMouseClicked="#buscarPedidos" promptText="Buscar" />
                         <Button layoutX="73.0" layoutY="592.0" onAction="#RegistrarPedidos" prefHeight="30.0" prefWidth="125.0" text="Registrar" />
-                        <Button fx:id="btnModificarProductos1" layoutX="407.0" layoutY="628.0" onAction="#ModificarPedidos" prefHeight="30.0" prefWidth="125.0" text="Modificar" />
-                        <Button layoutX="228.0" layoutY="613.0" onAction="#EliminarPedidos" prefHeight="30.0" prefWidth="125.0" text="Eliminar" />
-                        <ComboBox fx:id="cmbBuscarPedido1" layoutX="823.0" layoutY="21.0" prefWidth="150.0" promptText="Select" />
+                        <Button fx:id="btnModificarProductos1" layoutX="381.0" layoutY="592.0" onAction="#ModificarPedidos" prefHeight="30.0" prefWidth="125.0" text="Modificar" />
+                        <Button layoutX="229.0" layoutY="592.0" onAction="#EliminarPedidos" prefHeight="30.0" prefWidth="125.0" text="Eliminar" />
+                        <ComboBox fx:id="cmbBuscarPedido1" layoutX="810.0" layoutY="33.0" prefWidth="150.0" promptText="Select" />
+                        <Label layoutX="1184.0" layoutY="11.0" prefHeight="70.0" prefWidth="118.0" text="Label" textFill="RED">
+                           <font>
+                              <Font size="48.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Reportes">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ImageView fitHeight="765.0" fitWidth="1366.0">
+                           <image>
+                              <Image url="@../img/asdsa.jpg" />
+                           </image>
+                        </ImageView>
                      </children>
                   </AnchorPane>
               </content>

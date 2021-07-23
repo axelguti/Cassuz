@@ -18,6 +18,10 @@
         </element>
         <element id="module-output" name="CassuzResultadoFinal" />
       </element>
+      <element id="directory" name="lib">
+        <element id="library" level="project" name="fontawesomefx-8.9" />
+        <element id="library" level="project" name="jfoenix-8.0.10" />
+      </element>
     </root>
   </artifact>
 </component>

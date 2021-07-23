@@ -173,46 +173,50 @@ begin
 delete from tblusuario where usuariosusuario=@usuariosusuario;
 end
 
-
+select * from tblcatalogo
 /*tablas catalogo*/
+drop table tblcatalogo
 create table tblcatalogo(
 idcatalogo int  primary key Identity,
-fechacatalogo date not null,
 nomcatalogo varchar(50) not null,
 reprecatalogo varchar(150) not null,
-telefcatalogo varchar (9)
+telefcatalogo varchar (9),
+estadocatalogo varchar(50)
 )
 
 /*Crear catalogo*/
-create procedure SP_C_CATALOGO(@fechacatalogo date,@nomcatalogo as varchar(50),
+create procedure SP_C_CATALOGO(
+@estadocatalogo varchar(50),
+@nomcatalogo as varchar(50),
 @reprecatalogo varchar(150),
 @telefcatalogo as varchar(9))
 as
 begin
 
-insert into tblcatalogo(fechacatalogo,nomcatalogo,reprecatalogo,telefcatalogo) values(@fechacatalogo,@nomcatalogo,@reprecatalogo,@telefcatalogo)
+insert into tblcatalogo(estadocatalogo,nomcatalogo,reprecatalogo,telefcatalogo) values(@estadocatalogo,@nomcatalogo,@reprecatalogo,@telefcatalogo)
 
 end;
 
 exec SP_C_CATALOGO '2020-06-02','Dolcezza','Irma','959901920'
 
-
+EXEC SP_D_CATALOGO 1
+DROP PROCEDURE SP_R_CATALOGO
 /*Mostrar catalogo*/
 create procedure SP_R_CATALOGO
 as
 begin
 
-select idcatalogo,nomcatalogo,reprecatalogo,telefcatalogo,fechacatalogo from tblcatalogo ORDER BY idcatalogo asc
+select idcatalogo,nomcatalogo,reprecatalogo,telefcatalogo,estadocatalogo from tblcatalogo ORDER BY idcatalogo asc
 
 end
 
 EXEC SP_R_CATALOGO
 
-
+drop procedure SP_U_CA
 /*Modificar Catalogo*/
 create procedure SP_U_CATALOGO(
 @idcatalogo as int,
-@fechacatalogo as date,
+@estadocatalogo as varchar(50),
 @nomcatalogo as varchar(50),
 @reprecatalogo as varchar(150),
 @telefcatalogo as varchar(9))
@@ -220,7 +224,7 @@ as
 begin
 
 update tblcatalogo set
-fechacatalogo=@fechacatalogo,
+estadocatalogo=@estadocatalogo,
 nomcatalogo=@nomcatalogo,
 reprecatalogo=@reprecatalogo,
 telefcatalogo=@telefcatalogo
@@ -239,6 +243,7 @@ end;
 
 
 /*tabla de listas de precios*/
+drop table tbllistaprecio
 create table tbllistaprecio(
 idproducto int primary key identity,
 pagproducto int not null,
@@ -291,7 +296,6 @@ insert into tblpedido(dnipromotor,idcatalogo,pagcatalogo,codproducto,
 
 end
 
-exec SP_R_PROMOTOR
 exec SP_R_CATALOGO
 
 DRop procedure SP_R_PEDIDO
@@ -346,3 +350,5 @@ end
 
 
 /*Pruebas de los procedimientos*/
+
+exec SP_R_CATALOGO

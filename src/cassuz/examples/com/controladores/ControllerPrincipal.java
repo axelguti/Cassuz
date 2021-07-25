@@ -2,6 +2,7 @@ package cassuz.examples.com.controladores;
 
 import cassuz.examples.com.beans.IconTest;
 import com.jfoenix.controls.JFXToggleButton;
+import com.sun.glass.ui.CommonDialogs;
 import javafx.animation.Interpolator;
 import cassuz.examples.com.DAOFactory.DAOFactory;
 import cassuz.examples.com.DTO.*;
@@ -518,11 +519,8 @@ public class ControllerPrincipal extends Component implements Initializable {
 
     //Ingresa datos del catalogo
     private CatalogoDTO DatosCatalogo() {
-        LocalDate fechaIngreso=dpFechaIngreso.getValue();
-        String formato=fechaIngreso.format(DateTimeFormatter.ofPattern("yyyyMM"));
         CatalogoDTO c = new CatalogoDTO();
         c.getEstado();
-        c.setNombre(formato+"-"+txtCatalogo.getText());
         c.setRepresentante(txtRepresentante.getText());
         c.setTelefono(txtCTelefono.getText());
         return c;
@@ -537,6 +535,9 @@ public class ControllerPrincipal extends Component implements Initializable {
     @FXML
     private void RegistrarCatalogo(ActionEvent actionEvent) {
         CatalogoDTO c = DatosCatalogo();
+        LocalDate fechaIngreso=dpFechaIngreso.getValue();
+        String formato=fechaIngreso.format(DateTimeFormatter.ofPattern("yyyyMM"));
+        c.setNombre(formato+"-"+txtCatalogo.getText());
         if (txtCatalogo.getText().isEmpty() || txtRepresentante.getText().isEmpty() ||
                 txtCTelefono.getText().isEmpty()) {
             Error();
@@ -564,6 +565,12 @@ public class ControllerPrincipal extends Component implements Initializable {
     @FXML
     private void ModificarCatalogo(ActionEvent actionEvent) {
         CatalogoDTO c = DatosCatalogo();
+        LocalDate fechaIngreso=dpFechaIngreso.getValue();
+        String catalogo=txtCatalogo.getText();
+        String catalogoA=catalogo.substring(7);
+        String formato=fechaIngreso.format(DateTimeFormatter.ofPattern("yyyyMM"));
+        c.getEstado();
+        c.setNombre(formato+"-"+catalogoA);
         c.setId(Integer.parseInt(txtIdCatalogo.getText()));
         toggleButton();
         if (txtCatalogo.getText().isEmpty() || txtRepresentante.getText().isEmpty() ||
@@ -581,14 +588,21 @@ public class ControllerPrincipal extends Component implements Initializable {
     }
 
     private void toggleButton(){
-        CatalogoDTO cat=new CatalogoDTO();
-        estadoCatalogo=cat.getButon();
+        CatalogoDTO catalogo=new CatalogoDTO();
+        List<CatalogoDTO> cat=daoCatalogo.listar();
 
-            if(cat.getEstado().equalsIgnoreCase("Habilitado")){
-                estadoCatalogo.isSelected();
-            }else{
-                cat.setEstado("Deshabilitado");
+
+        for(CatalogoDTO lista:cat){
+            if(lista.getEstado().equalsIgnoreCase("Habilitado")){
+                if(catalogo.getButon().isSelected()){
+                    catalogo.getButon().setText("Activado");
+                }else{
+                    catalogo.getButon().setText("Desactivado");
+                }
             }
+        }
+
+
     }
 
     //Busca catalogo
@@ -718,14 +732,15 @@ public class ControllerPrincipal extends Component implements Initializable {
         Window stage=btnImportar.getScene().getWindow();
         filechooser.setTitle("Importar Precios");
         filechooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(
-                "Excel","*,xlsx","xlx"
+                "Excel","*.xlsx","xlx"
         ));
         try {
             File file=filechooser.showOpenDialog(stage);
             filechooser.setInitialDirectory(file.getParentFile());
             r=listaPre.Importar(file);
+            JOptionPane.showMessageDialog(null,r,"Importacion",1);
         }catch (Exception e){
-
+            e.getMessage();
         }
     }
     private void Importar(){
@@ -820,11 +835,6 @@ public class ControllerPrincipal extends Component implements Initializable {
         pedidos.setFechaPedido(LocalDate.now());
         return pedidos;
     }
-
-
-
-
-    
 
     @FXML
     private void ModificarPedidos(ActionEvent actionEvent) {

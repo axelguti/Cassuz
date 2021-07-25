@@ -1,8 +1,5 @@
 package cassuz.examples.com.dao;
 
-
-
-
 import cassuz.examples.com.DTO.PromotorDTO;
 import cassuz.examples.com.conexion.Conexion;
 import cassuz.examples.com.interfaces.PromotorInterface;

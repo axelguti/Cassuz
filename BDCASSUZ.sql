@@ -248,15 +248,27 @@ create table tbllistaprecio(
 idproducto int primary key identity,
 pagproducto int not null,
 marcaproducto varchar(50),
-codproducto nvarchar(50),
+codproducto varchar(50),
 colorproducto VARCHAR(50),
 preciopublicoproducto decimal(7,2),
 preciopromotorproducto decimal(7,2),
 nomcatalog int,
 foreign key (nomcatalog) references tblcatalogo(idcatalogo));
 
+create procedure SP_C_ListaPrecios(
+@pagproducto as int,
+@marcaproducto as varchar(50),
+@codproducto as varchar(50),
+@colorproducto as varchar(50),
+@preciopublicoproducto as decimal(7,2),
+@preciopromotorproducto as decimal(7,2),
+@nomcatalogo as int
+)
+as
+;
 
-drop table tblpedido
+
+
 /*tabla de pedidos*/
 create table tblpedido(
 idpedido int primary key identity,

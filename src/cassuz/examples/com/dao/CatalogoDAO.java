@@ -7,7 +7,6 @@ import cassuz.examples.com.interfaces.CatalogoInterface;
 
 import javax.swing.*;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

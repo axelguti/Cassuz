@@ -12,6 +12,7 @@ public class CatalogoDTO {
     private String estado;
     private JFXToggleButton buton;
 
+
     public String getEstado() {
         estado="Habilitado";
         return estado;
@@ -67,5 +68,7 @@ public class CatalogoDTO {
         System.out.println(getNombre());
         System.out.println(getRepresentante());
         System.out.println(getTelefono());
+        System.out.println(getEstado());
+
     }
 }

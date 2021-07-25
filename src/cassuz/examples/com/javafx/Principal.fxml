@@ -358,8 +358,8 @@
                               <TextField fx:id="txtApellidoPromotorPedido" layoutX="141.0" layoutY="99.0" prefHeight="25.0" prefWidth="253.0" promptText="Apellidos" />
                               <TextField fx:id="txtNombrePromotorPedido" layoutX="140.0" layoutY="141.0" prefHeight="25.0" prefWidth="255.0" promptText="Nombres" />
                               <Label layoutX="34.0" layoutY="188.0" prefHeight="17.0" prefWidth="71.0" text="Tipo Pago" />
-                              <TextField fx:id="txtNombrePromotorPedido2" layoutX="140.0" layoutY="184.0" prefHeight="25.0" prefWidth="255.0" promptText="Metodo de pago" />
-                              <ComboBox editable="true" layoutX="140.0" layoutY="225.0" prefWidth="150.0" />
+                              <ComboBox fx:id="cmbTipoPago" editable="true" layoutX="140.0" layoutY="184.0" prefWidth="150.0" />
+                              <TextField fx:id="cmbTipoPago" layoutX="140.0" layoutY="225.0" prefHeight="25.0" prefWidth="255.0" promptText="Banco" />
                               <Label layoutX="34.0" layoutY="229.0" prefHeight="17.0" prefWidth="35.0" text="Banco" />
                            </children>
                         </Pane>
